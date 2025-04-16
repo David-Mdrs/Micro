@@ -52,36 +52,16 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
-// Invertendo o estado do LED igualmente
-void InverterLedReg() {
-	GPIOA->ODR ^= 0b11 << 6;
-}
 
-void Despertador() {
-	 HAL_Delay(1000);
-	 for(int i = 0; i < 4; i++){
-		 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_SET);
-	 	 HAL_Delay(100);
-	 	 HAL_GPIO_WritePin(GPIOB, GPIO_PIN_6, GPIO_PIN_RESET);
-	 	 HAL_Delay(100);
-	 }
-}
 
-void ativarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade) {
-	for(int i = 0; i < 2000; i += velocidade) {
-		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_RESET);
-		Delay_us(i);
-		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_SET);
-		Delay_us(1999 - i);
-	}
 
-	for(int i = 0; i < 2000; i += velocidade) {
-		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_RESET);
-		Delay_us(1999 - i);
-		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_SET);
-		Delay_us(i);
-	}
-}
+// Invertendo o estado do LED através de registradores
+void InverterLedReg();
+void Despertador(GPIO_TypeDef* porta, uint16_t pino);
+void AtivarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade);
+
+
+
 
 /* USER CODE END PFP */
 
@@ -114,7 +94,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-GPIOA->ODR ^= 0b11 << 6;
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -130,7 +110,8 @@ GPIOA->ODR ^= 0b11 << 6;
 
   while (1) {
 
-	  ativarModoPWM(GPIOA, GPIO_PIN_6, 10);
+	  InverterLedReg();
+	  HAL_Delay(1000);
 
     /* USER CODE END WHILE */
 
@@ -216,6 +197,37 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void InverterLedReg() {
+	GPIOA->ODR ^= 0b11 << 6;
+}
+
+void Despertador(GPIO_TypeDef* porta, uint16_t pino) {
+	 HAL_Delay(1000);
+	 for(int i = 0; i < 4; i++){
+		 HAL_GPIO_WritePin(porta, pino, GPIO_PIN_SET);
+	 	 HAL_Delay(100);
+	 	 HAL_GPIO_WritePin(porta, pino, GPIO_PIN_RESET);
+	 	 HAL_Delay(100);
+	 }
+}
+
+void AtivarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade) {
+	for(int i = 0; i < 2000; i += velocidade) {
+		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_RESET);
+		Delay_us(i);
+		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_SET);
+		Delay_us(1999 - i);
+	}
+
+	for(int i = 0; i < 2000; i += velocidade) {
+		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_RESET);
+		Delay_us(1999 - i);
+		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_SET);
+		Delay_us(i);
+	}
+}
+
 
 /* USER CODE END 4 */
 

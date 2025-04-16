@@ -20,10 +20,10 @@
 ../Core/Inc/Utility.h:513:5:__io_getchar	1
 ../Core/Inc/Utility.h:519:6:USART1_IRQHandler	1
 ../Core/Inc/Utility.h:528:10:Random_Number	3
-../Core/Src/main.c:56:6:InverterLedReg	1
-../Core/Src/main.c:60:6:Despertador	2
-../Core/Src/main.c:70:6:ativarModoPWM	3
-../Core/Src/main.c:97:5:main	1
-../Core/Src/main.c:146:6:SystemClock_Config	3
-../Core/Src/main.c:192:13:MX_GPIO_Init	1
-../Core/Src/main.c:226:6:Error_Handler	1
+../Core/Src/main.c:77:5:main	1
+../Core/Src/main.c:127:6:SystemClock_Config	3
+../Core/Src/main.c:173:13:MX_GPIO_Init	1
+../Core/Src/main.c:201:6:InverterLedReg	1
+../Core/Src/main.c:205:6:Despertador	2
+../Core/Src/main.c:215:6:AtivarModoPWM	3
+../Core/Src/main.c:238:6:Error_Handler	1
