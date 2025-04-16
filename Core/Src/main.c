@@ -67,6 +67,21 @@ void Despertador() {
 	 }
 }
 
+void ativarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade) {
+	for(int i = 0; i < 2000; i += velocidade) {
+		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_RESET);
+		Delay_us(i);
+		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_SET);
+		Delay_us(1999 - i);
+	}
+
+	for(int i = 0; i < 2000; i += velocidade) {
+		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_RESET);
+		Delay_us(1999 - i);
+		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_SET);
+		Delay_us(i);
+	}
+}
 
 /* USER CODE END PFP */
 
@@ -115,19 +130,7 @@ GPIOA->ODR ^= 0b11 << 6;
 
   while (1) {
 
-	  for(int i = 0; i < 2000; i += 10) {
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-		  Delay_us(i);
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-		  Delay_us(1999 - i);
-	  }
-
-	  for(int i = 0; i < 2000; i += 10) {
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-		  Delay_us(1999 - i);
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-		  Delay_us(i);
-	  }
+	  ativarModoPWM(GPIOA, GPIO_PIN_6, 10);
 
     /* USER CODE END WHILE */
 
