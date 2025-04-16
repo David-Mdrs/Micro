@@ -53,14 +53,10 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
 
-
-
-// Invertendo o estado do LED através de registradores
+void Semaforo();
 void InverterLedReg();
 void Despertador(GPIO_TypeDef* porta, uint16_t pino);
 void AtivarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade);
-
-
 
 
 /* USER CODE END PFP */
@@ -110,13 +106,14 @@ int main(void)
 
   while (1) {
 
-	  InverterLedReg();
-	  HAL_Delay(1000);
+	  Semaforo();
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
   }
+
   /* USER CODE END 3 */
 }
 
@@ -182,10 +179,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PA6 */
-  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  /*Configure GPIO pins : PA5 PA6 PA7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -197,6 +194,21 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+
+void Semaforo() {
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	  HAL_Delay(4000);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
+	  HAL_Delay(2000);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
+
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
+	  HAL_Delay(4000);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
+}
 
 void InverterLedReg() {
 	GPIOA->ODR ^= 0b11 << 6;
