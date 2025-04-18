@@ -58,7 +58,7 @@ void InverterLedReg();
 void Despertador(GPIO_TypeDef* porta, uint16_t pino);
 void AtivarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade);
 void LedEBotao();
-
+void LedEBotaoDec();
 
 /* USER CODE END PFP */
 
@@ -105,21 +105,9 @@ int main(void)
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 
-
-	int contador = 150;
 	while (1) {
 
-		while(!HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_3)) {
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
-			HAL_Delay(contador);
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
-			HAL_Delay(contador);
-
-			if(contador > 0)
-				contador--;
-		}
-
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+		LedEBotaoDec();
 
 		/* USER CODE END WHILE */
 
@@ -267,6 +255,20 @@ void LedEBotao() {
 		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
 }
 
+void LedEBotaoDec(){
+	int contador = 150;
+	while(!HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_3)) {
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_Delay(contador);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+		HAL_Delay(contador);
+
+		if(contador > 0)
+			contador--;
+	}
+
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+}
 
 /* USER CODE END 4 */
 
