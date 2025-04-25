@@ -74,49 +74,85 @@ void LedEBotaoDec();
 int main(void)
 {
 
-	/* USER CODE BEGIN 1 */
+  /* USER CODE BEGIN 1 */
 
-	/* USER CODE END 1 */
+  /* USER CODE END 1 */
 
-	/* MCU Configuration--------------------------------------------------------*/
+  /* MCU Configuration--------------------------------------------------------*/
 
-	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	HAL_Init();
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
 
-	/* USER CODE BEGIN Init */
+  /* USER CODE BEGIN Init */
 
-	/* USER CODE END Init */
+  /* USER CODE END Init */
 
-	/* Configure the system clock */
-	SystemClock_Config();
+  /* Configure the system clock */
+  SystemClock_Config();
 
-	/* USER CODE BEGIN SysInit */
+  /* USER CODE BEGIN SysInit */
 
-	/* USER CODE END SysInit */
+  /* USER CODE END SysInit */
 
-	/* Initialize all configured peripherals */
-	MX_GPIO_Init();
-	/* USER CODE BEGIN 2 */
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  /* USER CODE BEGIN 2 */
 
 	Utility_Init();
 
-	/* USER CODE END 2 */
+  /* USER CODE END 2 */
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
 
 	while (1) {
 
-		LedEBotaoDec();
+		for(int i = 0; i < 2000; i += 2) {
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, SET);
 
-		/* USER CODE END WHILE */
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, SET);
+			Delay_us(i);
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, RESET);
+			Delay_us(2000 - i);
+		}
 
-		/* USER CODE BEGIN 3 */
+		for(int i = 0; i < 2000; i += 2) {
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, SET);
+
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, RESET);
+			Delay_us(i);
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, SET);
+			Delay_us(2000 - i);
+		}
+
+		for(int i = 0; i < 2000; i += 2) {
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, SET);
+
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, SET);
+			Delay_us(i);
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, RESET);
+			Delay_us(2000 - i);
+		}
+
+		for(int i = 0; i < 2000; i += 2) {
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, SET);
+
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, RESET);
+			Delay_us(i);
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, SET);
+			Delay_us(2000 - i);
+		}
+
+	//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, RESET);
+	//		Delay_us(1500);
+
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
 	}
 
-	/* USER CODE END 3 */
+  /* USER CODE END 3 */
 }
-
 
 /**
   * @brief System Clock Configuration
@@ -181,7 +217,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PE3 */
   GPIO_InitStruct.Pin = GPIO_PIN_3;
@@ -189,8 +225,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA7 */
-  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  /*Configure GPIO pins : PA6 PA7 */
+  GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
