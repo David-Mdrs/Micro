@@ -60,6 +60,7 @@ void AtivarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade);
 void LedEBotao();
 void LedEBotaoDec();
 void AlternarLedBotao();
+void LedBotaoContador();
 
 /* USER CODE END PFP */
 
@@ -118,7 +119,9 @@ int main(void)
 
 
 	while (1) {
-		AlternarLedBotao();
+
+		LedBotaoContador();
+
 
     /* USER CODE END WHILE */
 
@@ -278,6 +281,25 @@ void AlternarLedBotao() {
 		GPIO_Toggle_Pin(GPIOA, PIN_6);
 		HAL_Delay(100);
 		GPIO_Toggle_Pin(GPIOA, PIN_7);
+	}
+}
+
+void LedBotaoContador() {
+	// Precisa ativar os pinos PA6 e PE4
+	GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+	int contador = 0;
+
+	while(!GPIO_Read_Pin(GPIOE, PIN_4)) {
+		Delay_ms(1);
+		contador += 1;
+	}
+
+	if(contador > 0){
+		GPIO_Write_Pin(GPIOA, PIN_6, LOW);
+		Delay_ms(contador);
+		contador = 0;
+
+		GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
 	}
 }
 
