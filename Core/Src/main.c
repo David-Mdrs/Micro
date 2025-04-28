@@ -99,52 +99,22 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 	Utility_Init();
+	GPIO_Clock_Enable(GPIOE);
+	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);
+	GPIO_Resistor_Enable(GPIOE, PIN_3, PULL_UP);
+
+
+	GPIO_Clock_Enable(GPIOA);
+	GPIO_Pin_Mode(GPIOA, PIN_6, OUTPUT);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+
 	while (1) {
-
-		for(int i = 0; i < 2000; i += 2) {
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, SET);
-
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, SET);
-			Delay_us(i);
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, RESET);
-			Delay_us(2000 - i);
-		}
-
-		for(int i = 0; i < 2000; i += 2) {
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, SET);
-
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, RESET);
-			Delay_us(i);
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, SET);
-			Delay_us(2000 - i);
-		}
-
-		for(int i = 0; i < 2000; i += 2) {
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, SET);
-
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, SET);
-			Delay_us(i);
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, RESET);
-			Delay_us(2000 - i);
-		}
-
-		for(int i = 0; i < 2000; i += 2) {
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, SET);
-
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, RESET);
-			Delay_us(i);
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, SET);
-			Delay_us(2000 - i);
-		}
-
-	//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, RESET);
-	//		Delay_us(1500);
+		LedEBotao();
 
     /* USER CODE END WHILE */
 
@@ -206,31 +176,12 @@ void SystemClock_Config(void)
   */
 static void MX_GPIO_Init(void)
 {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
   /* USER CODE BEGIN MX_GPIO_Init_1 */
 
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin : PE3 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PA6 PA7 */
-  GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -285,10 +236,11 @@ void AtivarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade) {
 }
 
 void LedEBotao() {
-	if(!HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_3))
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
-	else
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+	if(!GPIO_Read_Pin(GPIOE,PIN_3)) {
+		GPIO_Write_Pin(GPIOA, PIN_6, LOW);
+	} else {
+		GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+	}
 }
 
 void LedEBotaoDec(){
