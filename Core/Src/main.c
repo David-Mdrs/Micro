@@ -103,9 +103,12 @@ int main(void)
 	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);
 	GPIO_Resistor_Enable(GPIOE, PIN_3, PULL_UP);
 
+	GPIO_Pin_Mode(GPIOE, PIN_4, INPUT);
+	GPIO_Resistor_Enable(GPIOE, PIN_4, PULL_UP);
 
 	GPIO_Clock_Enable(GPIOA);
 	GPIO_Pin_Mode(GPIOA, PIN_6, OUTPUT);
+	GPIO_Pin_Mode(GPIOA, PIN_7, OUTPUT);
 
   /* USER CODE END 2 */
 
@@ -236,10 +239,18 @@ void AtivarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade) {
 }
 
 void LedEBotao() {
-	if(!GPIO_Read_Pin(GPIOE,PIN_3)) {
+	// Deve ativar os pinos PE3 (botão) e PA6 (led)
+	if(!GPIO_Read_Pin(GPIOE, PIN_3)) {
 		GPIO_Write_Pin(GPIOA, PIN_6, LOW);
 	} else {
 		GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+	}
+
+	// Deve ativar os pinos PE4 (botão) e PA7 (led)
+	if(!GPIO_Read_Pin(GPIOE, PIN_4)) {
+		GPIO_Write_Pin(GPIOA, PIN_7, LOW);
+	} else {
+		GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
 	}
 }
 
