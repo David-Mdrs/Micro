@@ -101,14 +101,18 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 	Utility_Init();
+
 	GPIO_Clock_Enable(GPIOE);
+	GPIO_Clock_Enable(GPIOA);
+
+	// Botões
 	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);
 	GPIO_Resistor_Enable(GPIOE, PIN_3, PULL_UP);
 
-	GPIO_Pin_Mode(GPIOE, PIN_4, INPUT);
-	GPIO_Resistor_Enable(GPIOE, PIN_4, PULL_UP);
+	GPIO_Pin_Mode(GPIOA, PIN_0, INPUT);
+	GPIO_Resistor_Enable(GPIOA, PIN_0, PULL_DOWN);
 
-	GPIO_Clock_Enable(GPIOA);
+	// Leds
 	GPIO_Pin_Mode(GPIOA, PIN_6, OUTPUT);
 	GPIO_Pin_Mode(GPIOA, PIN_7, OUTPUT);
 
@@ -117,11 +121,42 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+	void ContagemBinaria(int contador) {
+		if(contador == 0) {
+			GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+			GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
+		} else if (contador == 1) {
+			GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+			GPIO_Write_Pin(GPIOA, PIN_7, LOW);
+		} else if (contador == 2) {
+			GPIO_Write_Pin(GPIOA, PIN_6, LOW);
+			GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
+		} else {
+			GPIO_Write_Pin(GPIOA, PIN_6, LOW);
+			GPIO_Write_Pin(GPIOA, PIN_7, LOW);
+		}
+	}
+
+	GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+	GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
+	int contador = 0;
 
 	while (1) {
 
-		LedBotaoContador();
-
+		// Incrementa
+		if(GPIO_Read_Pin(GPIOA, PIN_0)) {
+			if(contador == 3) { contador = 0; }
+			else { contador++; }
+			ContagemBinaria(contador);
+			Delay_ms(500);
+		}
+		// Decrementa
+		if(!GPIO_Read_Pin(GPIOE, PIN_3)) {
+			if(contador == 0) { contador = 3; }
+			else { contador--; }
+			ContagemBinaria(contador);
+			Delay_ms(500);
+		}
 
     /* USER CODE END WHILE */
 
