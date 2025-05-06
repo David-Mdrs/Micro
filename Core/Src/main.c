@@ -179,17 +179,36 @@ int main(void)
 //			Delay_ms(400);
 //		}
 
-		// Questão 6
-		for(int i = 0; i < 8; i++) {
-			GPIOE->ODR = 0;                // limpa todos os bits
-			GPIOE->ODR |= 1 << i;
-			Delay_ms(100);
-		}
-		for(int i = 7; i >= 0; i--) {
-			GPIOE->ODR = 0;                // limpa todos os bits
-			GPIOE->ODR |= 1 << i;
-			Delay_ms(100);
-		}
+//		// Questão 6
+//		for(int i = 0; i < 8; i++) {
+//			GPIOE->ODR = 0;
+//			GPIOE->ODR |= 1 << i;
+//			Delay_ms(100);
+//		}
+//		for(int i = 7; i >= 0; i--) {
+//			GPIOE->ODR = 0;
+//			GPIOE->ODR |= 1 << i;
+//			Delay_ms(100);
+//		}
+
+		// Questão 7
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_SET);
+		Delay_ms(5000);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_SET);
+		Delay_ms(2000);
+
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
+		Delay_ms(5000);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_SET);
+		Delay_ms(2000);
 
 
 
