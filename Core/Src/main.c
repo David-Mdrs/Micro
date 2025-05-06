@@ -61,6 +61,7 @@ void LedEBotao();
 void LedEBotaoDec();
 void AlternarLedBotao();
 void LedBotaoContador();
+void ContagemBinaria(int contador);
 
 /* USER CODE END PFP */
 
@@ -94,6 +95,9 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
+  // HAL_SYSTICK_Config(SystemCoreClock / 5);
+  // HAL_SYSTICK_Config(SystemCoreClock / 5);
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -102,61 +106,92 @@ int main(void)
 
 	Utility_Init();
 
+//	GPIO_Clock_Enable(GPIOE);
 	GPIO_Clock_Enable(GPIOE);
-	GPIO_Clock_Enable(GPIOA);
 
-	// Botões
-	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);
-	GPIO_Resistor_Enable(GPIOE, PIN_3, PULL_UP);
-
-	GPIO_Pin_Mode(GPIOA, PIN_0, INPUT);
-	GPIO_Resistor_Enable(GPIOA, PIN_0, PULL_DOWN);
+//	// Botões
+//	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);
+//	GPIO_Resistor_Enable(GPIOE, PIN_3, PULL_UP);
+//
+//	GPIO_Pin_Mode(GPIOA, PIN_0, INPUT);
+//	GPIO_Resistor_Enable(GPIOA, PIN_0, PULL_DOWN);
 
 	// Leds
-	GPIO_Pin_Mode(GPIOA, PIN_6, OUTPUT);
-	GPIO_Pin_Mode(GPIOA, PIN_7, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_3, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_4, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_5, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_6, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_7, OUTPUT);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-	void ContagemBinaria(int contador) {
-		if(contador == 0) {
-			GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
-			GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
-		} else if (contador == 1) {
-			GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
-			GPIO_Write_Pin(GPIOA, PIN_7, LOW);
-		} else if (contador == 2) {
-			GPIO_Write_Pin(GPIOA, PIN_6, LOW);
-			GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
-		} else {
-			GPIO_Write_Pin(GPIOA, PIN_6, LOW);
-			GPIO_Write_Pin(GPIOA, PIN_7, LOW);
-		}
-	}
-
-	GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
-	GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
-	int contador = 0;
 
 	while (1) {
 
-		// Incrementa
-		if(GPIO_Read_Pin(GPIOA, PIN_0)) {
-			if(contador == 3) { contador = 0; }
-			else { contador++; }
-			ContagemBinaria(contador);
-			Delay_ms(500);
+
+//		// Questão 1
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, LOW);
+//		Delay_ms(100);
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, HIGH);
+//		Delay_ms(100);
+
+////		// Questão 2
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, LOW);
+//		Delay_ms(100);
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, HIGH);
+//		Delay_ms(1900);
+
+		// Questão 3
+//		Delay_ms(1000);
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, HIGH);
+//		Delay_ms(250);
+//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, LOW);
+//		Delay_ms(1000);
+
+		// Questão 4
+//		for(int i = 0; i < 2000; i += 10) {
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+//			Delay_us(i);
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+//			Delay_us(1999 - i);
+//		}
+//
+//		for(int i = 0; i < 2000; i += 10) {
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+//			Delay_us(1999 - i);
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
+//			Delay_us(i);
+//		}
+
+//		// Questão 5
+//		for(int i = 0; i < 255; i++) {
+//			GPIO_Write_Port(GPIOE, i);
+//			Delay_ms(400);
+//		}
+
+		// Questão 6
+		for(int i = 0; i < 8; i++) {
+			GPIOE->ODR = 0;                // limpa todos os bits
+			GPIOE->ODR |= 1 << i;
+			Delay_ms(100);
 		}
-		// Decrementa
-		if(!GPIO_Read_Pin(GPIOE, PIN_3)) {
-			if(contador == 0) { contador = 3; }
-			else { contador--; }
-			ContagemBinaria(contador);
-			Delay_ms(500);
+		for(int i = 7; i >= 0; i--) {
+			GPIOE->ODR = 0;                // limpa todos os bits
+			GPIOE->ODR |= 1 << i;
+			Delay_ms(100);
 		}
+
+
 
     /* USER CODE END WHILE */
 
@@ -218,12 +253,24 @@ void SystemClock_Config(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
   /* USER CODE BEGIN MX_GPIO_Init_1 */
 
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : PA0 PA1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -335,6 +382,21 @@ void LedBotaoContador() {
 		contador = 0;
 
 		GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+	}
+}
+void ContagemBinaria(int contador) {
+	if(contador == 0) {
+		GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+		GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
+	} else if (contador == 1) {
+		GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+		GPIO_Write_Pin(GPIOA, PIN_7, LOW);
+	} else if (contador == 2) {
+		GPIO_Write_Pin(GPIOA, PIN_6, LOW);
+		GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
+	} else {
+		GPIO_Write_Pin(GPIOA, PIN_6, LOW);
+		GPIO_Write_Pin(GPIOA, PIN_7, LOW);
 	}
 }
 
