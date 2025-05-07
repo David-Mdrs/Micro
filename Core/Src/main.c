@@ -63,6 +63,8 @@ void AlternarLedBotao();
 void LedBotaoContador();
 void ContagemBinaria(int contador);
 
+void DisplaySeteSegHexa();
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -125,12 +127,31 @@ int main(void)
 	GPIO_Pin_Mode(GPIOE, PIN_5, OUTPUT);
 	GPIO_Pin_Mode(GPIOE, PIN_6, OUTPUT);
 	GPIO_Pin_Mode(GPIOE, PIN_7, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_8, OUTPUT);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+	const uint8_t digitos[16] = {
+	  0b00111111, // 0
+	  0b00000110, // 1
+	  0b01011011, // 2
+	  0b01001111, // 3
+	  0b01100110, // 4
+	  0b01101101, // 5
+	  0b01111101, // 6
+	  0b00000111, // 7
+	  0b01111111, // 8
+	  0b01101111, // 9
+	  0b01110111, // A
+	  0b01111100, // b
+	  0b00111001, // C
+	  0b01011110, // d
+	  0b01111001, // E
+	  0b01110001  // F
+	};
 
 	while (1) {
 
@@ -191,24 +212,53 @@ int main(void)
 //			Delay_ms(100);
 //		}
 
-		// Questão 7
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_SET);
-		Delay_ms(5000);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_SET);
-		Delay_ms(2000);
+//		// Questão 7
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_RESET);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_SET);
+//		Delay_ms(5000);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_SET);
+//		Delay_ms(2000);
+//
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_RESET);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_RESET);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
+//		Delay_ms(5000);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
+//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_SET);
+//		Delay_ms(2000);
 
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
-		Delay_ms(5000);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_SET);
-		Delay_ms(2000);
+		// Questão 8
+		// DisplaySeteSegHexa();
+
+		// Questão 9
+
+		GPIOE->ODR = digitos[5];
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
+		Delay_ms(1000);
+//						HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_SET);
+//						HAL_GPIO_WritePin(GPIOE, GPIO_PIN_ 8, GPIO_PIN_RESET);
+//						GPIOE->ODR = digitos[10];
+//						Delay_ms(1000);
+
+
+//		for(int i = 0; i < 16; i++) {
+//			for(int j = 0; j < 16; j++) {
+//				HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_RESET);
+//				HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
+//				GPIOE->ODR = digitos[i];
+//				Delay_ms(1000);
+//				HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_SET);
+//				HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+//				GPIOE->ODR = digitos[j];
+//				Delay_ms(1000);
+//			}
+//		}
+
 
 
 
@@ -416,6 +466,45 @@ void ContagemBinaria(int contador) {
 	} else {
 		GPIO_Write_Pin(GPIOA, PIN_6, LOW);
 		GPIO_Write_Pin(GPIOA, PIN_7, LOW);
+	}
+}
+
+void DisplaySeteSegHexa() {
+	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_3, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_4, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_5, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_6, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_7, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_8, OUTPUT);
+
+	const uint8_t digitos[16] = {
+	  0b00111111, // 0
+	  0b00000110, // 1
+	  0b01011011, // 2
+	  0b01001111, // 3
+	  0b01100110, // 4
+	  0b01101101, // 5
+	  0b01111101, // 6
+	  0b00000111, // 7
+	  0b01111111, // 8
+	  0b01101111, // 9
+	  0b01110111, // A
+	  0b01111100, // b
+	  0b00111001, // C
+	  0b01011110, // d
+	  0b01111001, // E
+	  0b01110001  // F
+	};
+
+	while(1) {
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+		for(int i = 0; i < 16; i++) {
+			GPIOE->ODR = digitos[i];
+			Delay_ms(500);
+		}
 	}
 }
 
