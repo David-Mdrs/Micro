@@ -109,6 +109,17 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 	Utility_Init();
+	GPIO_Clock_Enable(GPIOE);
+
+	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);	// LED A
+	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);	// LED B
+	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);	// LED C
+	//GPIO_Pin_Mode(GPIOE, PIN_3, OUTPUT);	// LED D
+	//GPIO_Pin_Mode(GPIOE, PIN_4, OUTPUT);	// LED E
+	GPIO_Pin_Mode(GPIOE, PIN_5, OUTPUT);	// LED F
+	GPIO_Pin_Mode(GPIOE, PIN_6, OUTPUT);	// LED G
+	GPIO_Pin_Mode(GPIOE, PIN_7, OUTPUT);	// On/Off Digito 1
+	GPIO_Pin_Mode(GPIOE, PIN_8, OUTPUT);	// On/Off Digito 2
 
 
   /* USER CODE END 2 */
@@ -199,8 +210,10 @@ int main(void)
 		// DisplaySeteSegHexa();
 
 		// Questão 9
-		DisplaySeteSegHexa2D();
+		//DisplaySeteSegHexa2D();
 
+		//13
+		LedEBotao();
 
 
 
@@ -270,11 +283,18 @@ static void MX_GPIO_Init(void)
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : PE3 PE4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA0 PA1 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
@@ -446,7 +466,7 @@ void DisplaySeteSegHexa() {
 	};
 
 	while(1) {
-		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_RESET);
 		for(int i = 0; i < 16; i++) {
 			GPIOE->ODR = digitos[i];
 			Delay_ms(500);
@@ -489,10 +509,11 @@ void DisplaySeteSegHexa2D() {
 	};
 
 	while(1) {
+
 		for(int i = 0; i < 16; i++) {
 			for(int j = 0; j < 16; j++) {
 				int contador = 0;
-				while(contador < 200) {
+				while(contador < 50) {
 					GPIOE->ODR = digitos[i];
 					HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_RESET);
 					HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
@@ -504,6 +525,25 @@ void DisplaySeteSegHexa2D() {
 					Delay_ms(1);
 
 					contador++;
+				}
+			}
+		}
+		for(int i = 15; i >= 0; i--) {
+			for(int j = 15; j >= 0; j--) {
+				int contador = 0;
+				while(contador < 50) {
+					GPIOE->ODR = digitos[i];
+					HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_RESET);
+					HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_SET);
+					Delay_ms(1);
+
+					GPIOE->ODR = digitos[j];
+					HAL_GPIO_WritePin(GPIOE, GPIO_PIN_7, GPIO_PIN_SET);
+					HAL_GPIO_WritePin(GPIOE, GPIO_PIN_8, GPIO_PIN_RESET);
+					Delay_ms(1);
+
+					contador++;
+
 				}
 			}
 		}
