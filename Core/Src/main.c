@@ -23,7 +23,8 @@
 /* USER CODE BEGIN Includes */
 
 #include "Utility.h"
-
+#include "LCD_Blio.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,17 +110,21 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 	Utility_Init();
-	GPIO_Clock_Enable(GPIOE);
+	LCD_Init(4, 20);
 
-	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);	// LED A
-	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);	// LED B
-	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);	// LED C
-	//GPIO_Pin_Mode(GPIOE, PIN_3, OUTPUT);	// LED D
-	//GPIO_Pin_Mode(GPIOE, PIN_4, OUTPUT);	// LED E
-	GPIO_Pin_Mode(GPIOE, PIN_5, OUTPUT);	// LED F
-	GPIO_Pin_Mode(GPIOE, PIN_6, OUTPUT);	// LED G
-	GPIO_Pin_Mode(GPIOE, PIN_7, OUTPUT);	// On/Off Digito 1
-	GPIO_Pin_Mode(GPIOE, PIN_8, OUTPUT);	// On/Off Digito 2
+
+	GPIO_Clock_Enable(GPIOA);
+	GPIO_Clock_Enable(GPIOD);
+
+
+	GPIO_Pin_Mode(GPIOA, PIN_4, OUTPUT);
+
+	GPIO_Pin_Mode(GPIOD, PIN_0, OUTPUT);
+	GPIO_Pin_Mode(GPIOD, PIN_1, OUTPUT);
+	GPIO_Pin_Mode(GPIOD, PIN_2, OUTPUT);
+	GPIO_Pin_Mode(GPIOD, PIN_3, OUTPUT);
+	GPIO_Pin_Mode(GPIOD, PIN_4, OUTPUT);
+	GPIO_Pin_Mode(GPIOD, PIN_5, OUTPUT);
 
 
   /* USER CODE END 2 */
@@ -127,8 +132,58 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+	LCD_Write_String(1, 10, "D");
+	Delay_ms(200);
+	LCD_Write_String(1, 9, "DA");
+	Delay_ms(200);
+	LCD_Write_String(1, 9, "DAV");
+	Delay_ms(200);
+	LCD_Write_String(1, 8, "DAVI");
+	Delay_ms(200);
+	LCD_Write_String(1, 8, "DAVID");
+	Delay_ms(200);
+	LCD_Write_String(1, 7, "DAVID ");
+	Delay_ms(200);
+	LCD_Write_String(1, 7, "DAVID E");
+	Delay_ms(200);
+
+	LCD_Write_String(2, 10, "J");
+	Delay_ms(200);
+	LCD_Write_String(2, 9, "JO");
+	Delay_ms(200);
+	LCD_Write_String(2, 9, "JOA");
+	Delay_ms(200);
+	LCD_Write_String(2, 8, "JOAO");
+	Delay_ms(200);
+
+	LCD_Write_String(3, 10, "C");
+	Delay_ms(200);
+	LCD_Write_String(3, 9, "CU");
+	Delay_ms(200);
+	LCD_Write_String(3, 9, "CUI");
+	Delay_ms(200);
+	LCD_Write_String(3, 8, "CUID");
+	Delay_ms(200);
+	LCD_Write_String(3, 8, "CUIDA");
+	Delay_ms(200);
 
 	while (1) {
+
+		LCD_Write_String(1, 7, "DAVID E");
+		LCD_Write_String(2, 8, "JOAO");
+		LCD_Write_String(3, 7, "CUIDA");
+
+		for(int i = 0; i <= 10; i++) {
+			char buffer[4];
+		    Delay_ms(500);
+		    sprintf(buffer, "%d", i);
+		    LCD_Write_String(4, 10, buffer);
+		}
+	    Delay_ms(500);
+	    LCD_Write_String(4, 10, "10");
+	    Delay_ms(500);
+
+		LCD_Write_String(4, 10, "  ");
 
 
 //		// Questão 1
