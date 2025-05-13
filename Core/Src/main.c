@@ -66,6 +66,7 @@ void ContagemBinaria(int contador);
 
 void DisplaySeteSegHexa();
 void DisplaySeteSegHexa2D();
+void Genius();
 
 
 /* USER CODE END PFP */
@@ -110,21 +111,16 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 	Utility_Init();
-	LCD_Init(4, 20);
+//	LCD_Init(4, 20);
+//
+//
+//	GPIO_Clock_Enable(GPIOE);
 
+//	GPIO_Clock_Enable(GPIOE);
+//	GPIO_Pin_Mode(GPIOE, PIN_0, INPUT);
+//	GPIO_Resistor_Enable(GPIOE, PIN_0, PULL_UP);
+//	GPIO_Pin_Mode(GPIOE, PIN_4, OUTPUT);
 
-	GPIO_Clock_Enable(GPIOA);
-	GPIO_Clock_Enable(GPIOD);
-
-
-	GPIO_Pin_Mode(GPIOA, PIN_4, OUTPUT);
-
-	GPIO_Pin_Mode(GPIOD, PIN_0, OUTPUT);
-	GPIO_Pin_Mode(GPIOD, PIN_1, OUTPUT);
-	GPIO_Pin_Mode(GPIOD, PIN_2, OUTPUT);
-	GPIO_Pin_Mode(GPIOD, PIN_3, OUTPUT);
-	GPIO_Pin_Mode(GPIOD, PIN_4, OUTPUT);
-	GPIO_Pin_Mode(GPIOD, PIN_5, OUTPUT);
 
 
   /* USER CODE END 2 */
@@ -132,58 +128,27 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-	LCD_Write_String(1, 10, "D");
-	Delay_ms(200);
-	LCD_Write_String(1, 9, "DA");
-	Delay_ms(200);
-	LCD_Write_String(1, 9, "DAV");
-	Delay_ms(200);
-	LCD_Write_String(1, 8, "DAVI");
-	Delay_ms(200);
-	LCD_Write_String(1, 8, "DAVID");
-	Delay_ms(200);
-	LCD_Write_String(1, 7, "DAVID ");
-	Delay_ms(200);
-	LCD_Write_String(1, 7, "DAVID E");
-	Delay_ms(200);
 
-	LCD_Write_String(2, 10, "J");
-	Delay_ms(200);
-	LCD_Write_String(2, 9, "JO");
-	Delay_ms(200);
-	LCD_Write_String(2, 9, "JOA");
-	Delay_ms(200);
-	LCD_Write_String(2, 8, "JOAO");
-	Delay_ms(200);
-
-	LCD_Write_String(3, 10, "C");
-	Delay_ms(200);
-	LCD_Write_String(3, 9, "CU");
-	Delay_ms(200);
-	LCD_Write_String(3, 9, "CUI");
-	Delay_ms(200);
-	LCD_Write_String(3, 8, "CUID");
-	Delay_ms(200);
-	LCD_Write_String(3, 8, "CUIDA");
-	Delay_ms(200);
 
 	while (1) {
 
-		LCD_Write_String(1, 7, "DAVID E");
-		LCD_Write_String(2, 8, "JOAO");
-		LCD_Write_String(3, 7, "CUIDA");
+		Genius();
 
-		for(int i = 0; i <= 10; i++) {
-			char buffer[4];
-		    Delay_ms(500);
-		    sprintf(buffer, "%d", i);
-		    LCD_Write_String(4, 10, buffer);
-		}
-	    Delay_ms(500);
-	    LCD_Write_String(4, 10, "10");
-	    Delay_ms(500);
-
-		LCD_Write_String(4, 10, "  ");
+//		LCD_Write_String(1, 7, "DAVID E");
+//		LCD_Write_String(2, 8, "JOAO");
+//		LCD_Write_String(3, 7, "CUIDA");
+//
+//		for(int i = 0; i <= 10; i++) {
+//			char buffer[4];
+//		    Delay_ms(500);
+//		    sprintf(buffer, "%d", i);
+//		    LCD_Write_String(4, 10, buffer);
+//		}
+//	    Delay_ms(500);
+//	    LCD_Write_String(4, 10, "10");
+//	    Delay_ms(500);
+//
+//		LCD_Write_String(4, 10, "  ");
 
 
 //		// Questão 1
@@ -268,7 +233,7 @@ int main(void)
 		//DisplaySeteSegHexa2D();
 
 		//13
-		LedEBotao();
+		// LedEBotao();
 
 
 
@@ -599,6 +564,154 @@ void DisplaySeteSegHexa2D() {
 
 					contador++;
 
+				}
+			}
+		}
+	}
+}
+
+void Genius() {
+	GPIO_Clock_Enable(GPIOE);
+
+	// botões
+	GPIO_Pin_Mode(GPIOE, PIN_0, INPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_1, INPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_2, INPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);
+
+	GPIO_Resistor_Enable(GPIOE, PIN_0, PULL_UP);
+	GPIO_Resistor_Enable(GPIOE, PIN_1, PULL_UP);
+	GPIO_Resistor_Enable(GPIOE, PIN_2, PULL_UP);
+	GPIO_Resistor_Enable(GPIOE, PIN_3, PULL_UP);
+
+	// leds
+	GPIO_Pin_Mode(GPIOE, PIN_4, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_5, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_6, OUTPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_7, OUTPUT);
+
+	int tamanho = 0;
+	int entrada = 0;
+	uint16_t sequencia[20];
+	uint16_t numero;
+
+	while (1) {
+
+		for(int i = 0; i < 4; i++) {
+			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
+			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
+			GPIO_Write_Pin(GPIOE, PIN_6, LOW);
+			GPIO_Write_Pin(GPIOE, PIN_7, LOW);
+			Delay_ms(150);
+			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
+			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
+			GPIO_Write_Pin(GPIOE, PIN_6, HIGH);
+			GPIO_Write_Pin(GPIOE, PIN_7, HIGH);
+			Delay_ms(150);
+		}
+		GPIO_Write_Pin(GPIOE, PIN_6, LOW);
+		GPIO_Write_Pin(GPIOE, PIN_7, LOW);
+
+		Delay_ms(1000);
+
+		do {
+		    numero = Random_Number();
+		} while (numero != PIN_4 &&
+		         numero != PIN_5 &&
+		         numero != PIN_6 &&
+		         numero != PIN_7);
+		sequencia[tamanho] = numero;
+		tamanho++;
+
+
+		for(int i = 0; i < tamanho; i++) {
+			Delay_ms(350);
+			GPIO_Write_Pin(GPIOE, sequencia[i], HIGH);
+			Delay_ms(350);
+			GPIO_Write_Pin(GPIOE, sequencia[i], LOW);
+		}
+
+
+		while(1) {
+
+			// Chegou ao fim
+			if(entrada == tamanho) {
+				entrada = 0;
+				break;
+			}
+
+			if(!GPIO_Read_Pin(GPIOE, PIN_0)) {
+				GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
+				Delay_ms(300);
+				GPIO_Write_Pin(GPIOE, PIN_4, LOW);
+				if(sequencia[entrada] != PIN_4) {
+					for(int i = 0; i < 6; i++) {
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_4);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_6);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_7);
+						Delay_ms(500);
+					}
+					entrada = tamanho = 0;
+				} else {
+					entrada++;
+				}
+			}
+
+
+			if(!GPIO_Read_Pin(GPIOE, PIN_1)) {
+				GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
+				Delay_ms(300);
+				GPIO_Write_Pin(GPIOE, PIN_5, LOW);
+				if(sequencia[entrada] != PIN_5) {
+					for(int i = 0; i < 6; i++) {
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_4);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_6);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_7);
+						Delay_ms(500);
+					}
+					entrada = tamanho = 0;
+				} else {
+					entrada++;
+				}
+			}
+
+
+			if(!GPIO_Read_Pin(GPIOE, PIN_2)) {
+				GPIO_Write_Pin(GPIOE, PIN_6, HIGH);
+				Delay_ms(300);
+				GPIO_Write_Pin(GPIOE, PIN_6, LOW);
+				if(sequencia[entrada] != PIN_6) {
+					for(int i = 0; i < 6; i++) {
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_4);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_6);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_7);
+						Delay_ms(500);
+					}
+					entrada = tamanho = 0;
+				} else {
+					entrada++;
+				}
+			}
+
+
+			if(!GPIO_Read_Pin(GPIOE, PIN_3)) {
+				GPIO_Write_Pin(GPIOE, PIN_7, HIGH);
+				Delay_ms(300);
+				GPIO_Write_Pin(GPIOE, PIN_7, LOW);
+				if(sequencia[entrada] != PIN_7) {
+					for(int i = 0; i < 6; i++) {
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_4);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_5);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_6);
+						HAL_GPIO_TogglePin(GPIOE, GPIO_PIN_7);
+						Delay_ms(500);
+					}
+					entrada = tamanho = 0;
+				} else {
+					entrada++;
 				}
 			}
 		}
