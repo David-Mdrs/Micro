@@ -874,17 +874,16 @@ void MotorDC() {
 
 void MicroServomotor() {
 	GPIO_Clock_Enable(GPIOE);
-	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);
-	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);
-	GPIO_Pin_Mode(GPIOE, PIN_2, INPUT);
-	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);
+	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);			// Pino do motor
+	GPIO_Pin_Mode(GPIOE, PIN_2, INPUT);				// Botão
+	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);				// Botão
 	GPIO_Resistor_Enable(GPIOE, PIN_2, PULL_UP);
 	GPIO_Resistor_Enable(GPIOE, PIN_3, PULL_UP);
 
 	contador = 500;
 	while (1) {
 
-		if(!GPIO_Read_Pin(GPIOE, PIN_3)) {	// Botão esquerdo
+		if(!GPIO_Read_Pin(GPIOE, PIN_3)) {
 			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
 			Delay_us(contador);
 			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
@@ -894,7 +893,7 @@ void MicroServomotor() {
 			}
 		}
 
-		if(!GPIO_Read_Pin(GPIOE, PIN_2)) {	// Botão esquerdo
+		if(!GPIO_Read_Pin(GPIOE, PIN_2)) {
 			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
 			Delay_us(contador);
 			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
