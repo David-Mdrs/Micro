@@ -67,6 +67,7 @@ void ContagemBinaria(int contador);
 void DisplaySeteSegHexa();
 void DisplaySeteSegHexa2D();
 void Genius();
+void SensorUltrassonico();
 
 
 /* USER CODE END PFP */
@@ -112,11 +113,9 @@ int main(void)
 
 	Utility_Init();
 //	LCD_Init(4, 20);
-//
-//
-//	GPIO_Clock_Enable(GPIOE);
 
-//	GPIO_Clock_Enable(GPIOE);
+
+
 //	GPIO_Pin_Mode(GPIOE, PIN_0, INPUT);
 //	GPIO_Resistor_Enable(GPIOE, PIN_0, PULL_UP);
 //	GPIO_Pin_Mode(GPIOE, PIN_4, OUTPUT);
@@ -129,10 +128,35 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
 
+	// MOTOR
+	//	GPIO_Clock_Enable(GPIOE);
+	//	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);
+	//	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);
+	//	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);
+
+
 
 	while (1) {
 
-		Genius();
+		SensorUltrassonico();
+
+
+		// MOTOR
+//		GPIO_Write_Pin(GPIOE, PIN_0, LOW);
+//		GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
+//		AtivarModoPWM(GPIOE, GPIO_PIN_2, 2);
+//		Delay_ms(1000);
+//
+//		GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
+//		GPIO_Write_Pin(GPIOE, PIN_1, LOW);
+//		AtivarModoPWM(GPIOE, GPIO_PIN_2, 2);
+//		Delay_ms(1000);
+
+
+
+
+
+		//Genius();
 
 //		LCD_Write_String(1, 7, "DAVID E");
 //		LCD_Write_String(2, 8, "JOAO");
@@ -366,6 +390,7 @@ void AtivarModoPWM(GPIO_TypeDef* porta, uint16_t pino, int velocidade) {
 		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_SET);
 		Delay_us(1999 - i);
 	}
+	Delay_ms(1000);
 
 	for(int i = 0; i < 2000; i += velocidade) {
 		HAL_GPIO_WritePin(porta, pino, GPIO_PIN_RESET);
@@ -718,6 +743,102 @@ void Genius() {
 	}
 }
 
+void SensorUltrassonico() {
+	GPIO_Clock_Enable(GPIOE);
+	GPIO_Pin_Mode(GPIOE, PIN_0, INPUT);		// ECHO
+	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);	// TRIG
+	GPIO_Write_Pin(GPIOE, PIN_1, LOW);
+	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);	// BUZZER
+
+	unsigned int distancia = 0;
+	int tempo = 0;
+
+	while (1) {
+
+		// Enviando pulso
+		Delay_ms(10);
+		GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
+		Delay_us(10);
+		GPIO_Write_Pin(GPIOE, PIN_1, LOW);
+
+		// Iniciando contagem
+		while(!GPIO_Read_Pin(GPIOE, PIN_0));
+		tempo = 0;
+		while(GPIO_Read_Pin(GPIOE, PIN_0)) {
+			Delay_us(1);
+			tempo++;
+		}
+
+		// Calculando distância
+		distancia = tempo/58;
+
+		// Acionando LED
+		if(distancia > 50) {
+			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+		} else if(distancia > 40) {
+			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+			Delay_ms(500);
+			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+			Delay_ms(500);
+		} else if(distancia > 30) {
+			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+			Delay_ms(300);
+			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+			Delay_ms(300);
+		} else if(distancia > 20) {
+			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+			Delay_ms(100);
+			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+			Delay_ms(100);
+		} else if(distancia > 7) {
+			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+			Delay_ms(50);
+			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+			Delay_ms(50);
+		} else {
+			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+		}
+	}
+}
+
+void SensorUltrassonico2() {
+	GPIO_Clock_Enable(GPIOE);
+	GPIO_Pin_Mode(GPIOE, PIN_0, INPUT);		// ECHO
+	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);	// TRIG
+	GPIO_Write_Pin(GPIOE, PIN_1, LOW);
+	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);	// BUZZER
+
+	unsigned int distancia = 0;
+	int tempo = 0;
+
+	while (1) {
+
+		// Enviando pulso
+		Delay_ms(10);
+		GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
+		Delay_us(10);
+		GPIO_Write_Pin(GPIOE, PIN_1, LOW);
+
+		// Iniciando contagem
+		while(!GPIO_Read_Pin(GPIOE, PIN_0));
+		tempo = 0;
+		while(GPIO_Read_Pin(GPIOE, PIN_0)) {
+			Delay_us(1);
+			tempo++;
+		}
+
+		// Calculando distância
+		distancia = tempo/58;
+
+		// Acionando LED
+		if(distancia > 50) {
+			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+		} else {
+			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+			Delay_ms(distancia * 10);
+		}
+	}
+}
 
 /* USER CODE END 4 */
 
