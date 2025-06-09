@@ -11,76 +11,171 @@
 
 //Definições Globais
 //Números dos pinos GPIO
-#define PIN_0	((uint8_t) 0)
-#define PIN_1	((uint8_t) 1)
-#define PIN_2	((uint8_t) 2)
-#define PIN_3	((uint8_t) 3)
-#define PIN_4	((uint8_t) 4)
-#define PIN_5	((uint8_t) 5)
-#define PIN_6	((uint8_t) 6)
-#define PIN_7	((uint8_t) 7)
-#define PIN_8	((uint8_t) 8)
-#define PIN_9	((uint8_t) 9)
-#define PIN_10	((uint8_t) 10)
-#define PIN_11	((uint8_t) 11)
-#define PIN_12	((uint8_t) 12)
-#define PIN_13	((uint8_t) 13)
-#define PIN_14	((uint8_t) 14)
-#define PIN_15	((uint8_t) 15)
+enum{
+	PIN_0,
+	PIN_1,
+	PIN_2,
+	PIN_3,
+	PIN_4,
+	PIN_5,
+	PIN_6,
+	PIN_7,
+	PIN_8,
+	PIN_9,
+	PIN_10,
+	PIN_11,
+	PIN_12,
+	PIN_13,
+	PIN_14,
+	PIN_15
+};
 
 //Modos de operação de um pino GPIO
-#define	INPUT		((uint8_t) 0b00)	//modo de entrada digital
-#define	OUTPUT		((uint8_t) 0b01)	//modo de saída digital
-#define	ALTERNATE	((uint8_t) 0b10)	//modo de função alternativa
-#define	ANALOG		((uint8_t) 0b11)	//modo analógico
+enum{
+	INPUT,		//modo de entrada digital
+	OUTPUT,		//modo de saída digital
+	ALTERNATE,	//modo de função alternativa
+	ANALOG		//modo analógico
+};
 
 //Tipos de saída de um pino GPIO
-#define	PUSH_PULL	((uint8_t) 0)	//saída push-pull
-#define	OPEN_DRAIN	((uint8_t) 1)	//saída open-drain
+enum{
+	PUSH_PULL,	//saída push-pull
+	OPEN_DRAIN	//saída open-drain
+};
 
 //Níveis lógicos de saída de um pino
-#define	LOW		((uint8_t) 0)	//nível lógico baixo
-#define	HIGH	((uint8_t) 1)	//nível lógico alto
+enum{
+	LOW,	//nível lógico baixo
+	HIGH	//nível lógico alto
+};
 
 //Modos de operação dos resistores de pull-up e pull-down
-#define	PULL_UP		((uint8_t) 0b01)	//resistor de pull-up
-#define	PULL_DOWN	((uint8_t) 0b10)	//resistor de pull-down
+enum{
+	PULL_UP = 0b01,		//resistor de pull-up
+	PULL_DOWN = 0b10	//resistor de pull-down
+};
 
-//Canais do ADC
-#define ADC_IN0  ((uint8_t) 0)
-#define ADC_IN1  ((uint8_t) 1)
-#define ADC_IN2  ((uint8_t) 2)
-#define ADC_IN3  ((uint8_t) 3)
-#define ADC_IN4  ((uint8_t) 4)
-#define ADC_IN5  ((uint8_t) 5)
-#define ADC_IN6  ((uint8_t) 6)
-#define ADC_IN7  ((uint8_t) 7)
-#define ADC_IN8  ((uint8_t) 8)
-#define ADC_IN9  ((uint8_t) 9)
-#define ADC_IN10 ((uint8_t) 10)
-#define ADC_IN11 ((uint8_t) 11)
-#define ADC_IN12 ((uint8_t) 12)
-#define ADC_IN13 ((uint8_t) 13)
-#define ADC_IN14 ((uint8_t) 14)
-#define ADC_IN15 ((uint8_t) 15)
+//Funções alternativas dos pinos GPIOS
+enum{
+	AF0,
+	AF1,
+	AF2,
+	AF3,
+	AF4,
+	AF5,
+	AF6,
+	AF7,
+	AF8,
+	AF9,
+	AF10,
+	AF11,
+	AF12,
+	AF13,
+	AF14,
+	AF15
+};
 
-//Modos de operação do ADC
-#define	SINGLE_CHANNEL	((uint8_t) 0)
-#define MULTI_CHANNEL	((uint8_t) 1)
+//Interrupções externas
+enum{
+	EXTI0,
+	EXTI1,
+	EXTI2,
+	EXTI3,
+	EXTI4,
+	EXTI5,
+	EXTI6,
+	EXTI7,
+	EXTI8,
+	EXTI9,
+	EXTI10,
+	EXTI11,
+	EXTI12,
+	EXTI13,
+	EXTI14,
+	EXTI15
+};
 
-//Resoluções do ADC (em bits)
-#define ADC_RES_12BITS	0b00
-#define ADC_RES_10BITS	0b01
-#define ADC_RES_8BITS	0b10
-#define ADC_RES_6BITS	0b11
+//Bordas de gatilho de EXTI
+enum{
+	FALLING_EDGE = 1,
+	RISING_EDGE = 2
+};
 
 //Canais do DAC
-#define DAC_CHANNEL1	((uint8_t) 0)
-#define DAC_CHANNEL2	((uint8_t) 1)
+enum
+{
+	DAC_CHANNEL1,
+	DAC_CHANNEL2
+};
 
 //Resoluções do DAC (em bits)
-#define DAC_RES_12BITS	((uint8_t) 0)
-#define DAC_RES_8BITS	((uint8_t) 1)
+enum
+{
+	DAC_RES_12BITS,
+	DAC_RES_8BITS
+};
+
+//Formas de onda automáticas do DAC
+enum
+{
+	AUTO_TRIANGLE,
+	AUTO_NOISE
+};
+
+//Amplitudes do DAC
+enum
+{
+	AMP_1BIT,
+	AMP_2BITS,
+	AMP_3BITS,
+	AMP_4BITS,
+	AMP_5BITS,
+	AMP_6BITS,
+	AMP_7BITS,
+	AMP_8BITS,
+	AMP_9BITS,
+	AMP_10BITS,
+	AMP_11BITS,
+	AMP_12BITS
+};
+
+//Modos de operação do ADC
+enum
+{
+	SINGLE_CHANNEL,
+	MULTI_CHANNEL
+};
+
+//Resoluções do ADC (em bits)
+enum
+{
+	ADC_RES_12BITS,
+	ADC_RES_10BITS,
+	ADC_RES_8BITS,
+	ADC_RES_6BITS
+};
+
+//Canais ADC
+enum
+{
+	ADC_IN0,
+	ADC_IN1,
+	ADC_IN2,
+	ADC_IN3,
+	ADC_IN4,
+	ADC_IN5,
+	ADC_IN6,
+	ADC_IN7,
+	ADC_IN8,
+	ADC_IN9,
+	ADC_IN10,
+	ADC_IN11,
+	ADC_IN12,
+	ADC_IN13,
+	ADC_IN14,
+	ADC_IN15
+};
 
 
 
@@ -99,12 +194,30 @@ void Delay_ms(uint32_t delay);		//atraso em ms
 void GPIO_Clock_Enable(GPIO_TypeDef* GPIOx);								//habilita o clock de um GPIO
 void GPIO_Pin_Mode(GPIO_TypeDef* GPIOx, uint8_t pin, uint8_t mode);			//configura o modo de operação de um pino de um GPIO
 void GPIO_Output_Type(GPIO_TypeDef* GPIOx, uint8_t pin, uint8_t mode);		//configura o tipo de saída de um pino de um GPIO
-static inline void GPIO_Write_Pin(GPIO_TypeDef* GPIOx, uint8_t pin, uint8_t level);		//escreve um nível lógico em um pino de um GPIO
-static inline void GPIO_Toggle_Pin(GPIO_TypeDef* GPIOx, uint8_t pin);					//inverte o nível lógico em um pino de um GPIO
-static inline void GPIO_Write_Port(GPIO_TypeDef* GPIOx, uint16_t value);				//escreve um valor numa porta GPIO
+void GPIO_Alternate_Function(GPIO_TypeDef* GPIOx, uint8_t pin, uint8_t function);	//configura a função alternativa de um pino de um GPIO
+static inline void GPIO_Write_Pin(GPIO_TypeDef* GPIOx, uint8_t pin, uint8_t level);	//escreve um nível lógico em um pino de um GPIO
+static inline void GPIO_Toggle_Pin(GPIO_TypeDef* GPIOx, uint8_t pin);				//inverte o nível lógico em um pino de um GPIO
+static inline void GPIO_Write_Port(GPIO_TypeDef* GPIOx, uint16_t value);			//escreve um valor numa porta GPIO
 void GPIO_Resistor_Enable(GPIO_TypeDef* GPIOx, uint8_t pin, uint8_t mode);	//habilita os resistores de pull-up ou pull-down
 static inline uint8_t GPIO_Read_Pin(GPIO_TypeDef* GPIOx, uint8_t pin);		//lê e retorna o nível lógico em um pino de um GPIO
 static inline uint16_t GPIO_Read_Port(GPIO_TypeDef* GPIOx);					//lê e retorna os níveis lógicos de uma porta GPIO
+
+//Função de configuração de interrupções externas
+#define GET_MACRO(_1, _2, _3, _4, NAME, ...) NAME
+#define EXTI_Config(...) GET_MACRO(__VA_ARGS__, EXTI_Config4, EXTI_Config3)(__VA_ARGS__)
+//#define EXTI_Config(...)	EXTI_Config_Helper(__VA_ARGS__)
+void EXTI_Config_Helper(uint8_t exti_line, GPIO_TypeDef* GPIOx, uint8_t trigger1, uint8_t trigger2);
+void EXTI_Config3(uint8_t exti_line, GPIO_TypeDef* GPIOx, uint8_t trigger1); //Função de configuração com 3 argumentos
+void EXTI_Config4(uint8_t exti_line, GPIO_TypeDef* GPIOx, uint8_t trigger1, uint8_t trigger2);	//Função de configuração com 4 argumentos
+static inline void EXTI_Clear_Pending(uint8_t exti_line);	//limpa bit de pendência da interrupção EXTI
+
+//Funções de manipulação do DAC
+#define GET_DAC_MACRO(_1, _2, _3, NAME, ...) NAME
+#define DAC_Init(...) GET_DAC_MACRO(__VA_ARGS__, DAC_Init3, _, DAC_Init1)(__VA_ARGS__)
+void DAC_Init1(uint8_t channel);  //inicializa apenas o canal
+void DAC_Init3(uint8_t channel, uint8_t waveform, uint8_t amplitude);  //inicializa o canal + tipo de sinal automático + amplitude
+void DAC_SetValue(uint8_t channel, uint16_t value, uint8_t resolution);	//escreve um valor com a resolução especificada no DAC selecionado
+void DAC_SWTrigger(uint8_t channel);	//gatilhamento do DAC por software
 
 //Funções de manipulação do ADC
 void ADC_Init(ADC_TypeDef *ADCx, uint8_t mode, uint8_t resolution);			//inicializa o ADC em SINGLE_CHANNEL ou MULTI_CHANNEL e especifica resolução
@@ -112,10 +225,6 @@ void ADC_SingleChannel(ADC_TypeDef *ADCx, uint8_t channel);					//configura o AD
 uint16_t ADC_GetSingleConversion(ADC_TypeDef *ADCx);						//lê o valor convertido de um único canal
 void ADC_MultiChannel(ADC_TypeDef *ADCx, uint8_t numChannels, uint8_t *channels);			//configura o ADC para converter múltiplos canais
 void ADC_GetMultiConversions(ADC_TypeDef *ADCx, uint8_t numChannels, uint16_t *results);	//lê os valores convertidos de múltiplos canais
-
-//Funções de manipulação do DAC
-void DAC_Init(uint8_t channel);											//inicializa um canal do ADC
-void DAC_SetValue(uint8_t channel, uint16_t value, uint8_t resolution);	//escreve um valor com a resolução especificada no ADC selecionado
 
 //Funções de periféricos de comunicação
 void USART1_Init(void);				//configuração da USART1 para debug com printf
@@ -230,6 +339,13 @@ void GPIO_Output_Type(GPIO_TypeDef* GPIOx, uint8_t pin, uint8_t mode)
 	GPIOx->OTYPER |= (mode << pin);	//configura o tipo selecionado
 }
 
+//Configura a função alternativa de um pino de um GPIO
+void GPIO_Alternate_Function(GPIO_TypeDef* GPIOx, uint8_t pin, uint8_t function)
+{
+	GPIOx->AFR[pin/8] &= ~(0b1111 << ((pin % 8) * 4));	//reseta os 4 bits da função alternativa
+	GPIOx->AFR[pin/8] |= (function << ((pin % 8) * 4));	//configura a função selecionada
+}
+
 //Escreve um nível lógico em um pino de um GPIO
 static inline void GPIO_Write_Pin(GPIO_TypeDef* GPIOx, uint8_t pin, uint8_t level)
 {
@@ -274,6 +390,116 @@ static inline uint16_t GPIO_Read_Port(GPIO_TypeDef* GPIOx)
 
 
 
+//Funções de manipulação das interrupções externas
+//Função de configuração
+//#define EXTI_Config(...)	EXTI_Config_Helper(__VA_ARGS__)
+void EXTI_Config_Helper(uint8_t exti_line, GPIO_TypeDef* GPIOx, uint8_t trigger1, uint8_t trigger2)
+{
+	uint8_t index = exti_line / 4;          //calcula o índice de EXTICR[]
+	uint8_t shift = (exti_line % 4) * 4;    //calcula o campo de bits dentro do EXTICR[index]
+	uint8_t port = ((uint32_t)GPIOx - (GPIOA_BASE)) / ((GPIOB_BASE) - (GPIOA_BASE)); //calcula o número da porta GPIO
+
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;		//habilita o clock de SYSCFG
+	SYSCFG->EXTICR[index] |= (port << shift);	//seleciona a porta/pino como gatilho de EXTI
+
+	if((trigger1 == FALLING_EDGE) || (trigger2 == FALLING_EDGE))
+		EXTI->FTSR |= 1 << exti_line;	//seleciona borda de descida
+	if((trigger1 == RISING_EDGE) || (trigger2 == RISING_EDGE))
+		EXTI->RTSR |= 1 << exti_line;	//seleciona borda de subida
+
+	EXTI->IMR |= 1 << exti_line;	//habilita a interrupção EXTI
+}
+
+//Função de configuração com 3 argumentos
+void EXTI_Config3(uint8_t exti_line, GPIO_TypeDef* GPIOx, uint8_t trigger1)
+{
+    EXTI_Config_Helper(exti_line, GPIOx, trigger1, 0);
+}
+
+//Função de configuração com 4 argumentos
+void EXTI_Config4(uint8_t exti_line, GPIO_TypeDef* GPIOx, uint8_t trigger1, uint8_t trigger2)
+{
+    EXTI_Config_Helper(exti_line, GPIOx, trigger1, trigger2);
+}
+
+//Função de limpeza de flag de pendência
+static inline void EXTI_Clear_Pending(uint8_t exti_line)
+{
+	EXTI->PR |= 1 << exti_line;	//limpa o flag de pendência em EXTI
+}
+
+
+
+//Funções de manipulação do DAC
+//Inicializa o DAC e os pinos GPIO de acordo com o canal selecionado.
+//Esta função configura o pino GPIO associado ao DAC, habilita a interface digital
+//e seleciona o canal apropriado com base no valor do parâmetro channel.
+//@param  channel: identifica o canal DAC desejado (DAC_CHANNEL1 ou DAC_CHANNEL2).
+void DAC_Init1(uint8_t channel)
+{
+	GPIO_Clock_Enable(GPIOA);			//liga o clock do GPIOA
+	RCC->APB1ENR |= RCC_APB1ENR_DACEN;	//habilita o clock da interface digital do DAC
+
+	GPIO_Pin_Mode(GPIOA, 4+channel, ANALOG);	//configura o pino no modo analógico
+	DAC->CR |= 1 << 16*channel;					//habilita o canal
+}
+
+//Inicializa o DAC e os pinos GPIO de acordo com canal selecionado.
+//Esta função configura o pino GPIO associado ao DAC, habilita a interface digital
+//seleciona o canal apropriado com base no valor do parâmetro channel,
+//habilita a geração de forma de onda automática com uma determinada amplitude.
+//@param  channel: identifica o canal DAC desejado (DAC_CHANNEL1 ou DAC_CHANNEL2).
+//@param  waveform: forma de onda (AUTO_TRIANGLE ou AUTO_NOISE).
+//@param  amplitude: amplitude da forma de onda (AMP_1BIT, AMP_2BITS, ..., AMP_12BITS).
+void DAC_Init3(uint8_t channel, uint8_t waveform, uint8_t amplitude)
+{
+	GPIO_Clock_Enable(GPIOA);			//liga o clock do GPIOA
+	RCC->APB1ENR |= RCC_APB1ENR_DACEN;	//habilita o clock da interface digital do DAC
+
+	GPIO_Pin_Mode(GPIOA, 4+channel, ANALOG);		//configura o pino no modo analógico
+	DAC->CR |= (2-waveform) << (6 + 16*channel);	//seleciona a forma de onda
+	DAC->CR |= amplitude << (8 + 16*channel);		//seleciona a amplitude
+	DAC->CR |= 0b111 << (3 + 16*channel);			//seleciona disparo por software
+	DAC->CR |= 1 << (2 + 16*channel);				//habilita gatilhamento
+	DAC->CR |= 1 << 16*channel;						//habilita o canal
+}
+
+//Escreve o valor de saída, com a resolução especificada, no canal selecionado do DAC.
+//Esta função escreve o valor de saída no DAC selecionado com base no canal e resolução especificados.
+//@param  channel: identifica o canal do DAC desejado (DAC_CHANNEL1 ou DAC_CHANNEL2).
+//@param  value: valor a ser escrito no DAC (12 bits ou 8 bits conforme a resolução).
+//@param  resolution: resolução do DAC (DAC_RES_12BITS ou DAC_RES_8BITS)
+void DAC_SetValue(uint8_t channel, uint16_t value, uint8_t resolution)
+{
+	switch((channel << 1) | resolution)
+	{
+		case 0b00:
+			DAC->DHR12R1 = value;	//escrita de 12 bits no canal 1
+			break;
+
+		case 0b01:
+			DAC->DHR8R1 = value;	//escrita de 8 bits no canal 1
+			break;
+
+		case 0b10:
+			DAC->DHR12R2 = value;	//escrita de 12 bits no canal 2
+			break;
+
+		case 0b11:
+			DAC->DHR8R2 = value;	//escrita de 8 bits no canal 2
+			break;
+	}
+}
+
+//Faz o gatilhamento por software no canal selecionado do DAC.
+//@param  channel: identifica o canal do DAC desejado (DAC_CHANNEL1 ou DAC_CHANNEL2).
+void DAC_SWTrigger(uint8_t channel)
+{
+	DAC->SWTRIGR |= 1 << channel;
+}
+
+
+
 //Funções de manipulação do ADC
 //Inicializa o periférico ADCx de acordo com a configuração do clock e outros parâmetros.
 //Configura o clock do ADC selecionado e habilita o ADC.
@@ -304,6 +530,8 @@ void ADC_Init(ADC_TypeDef *ADCx, uint8_t mode, uint8_t resolution)
 	//Definição da resolução
 	ADCx->CR1 &= ~ADC_CR1_RES;		//limpa o campo da resolução
 	ADCx->CR1 |= resolution << 24;	//escreve a resolução
+
+	ADCx->SMPR2 |= 0b111;			//seleção do tempo de amostragem (máximo)
 
 	//Liga o ADCx
 	ADCx->CR2 |= ADC_CR2_ADON;
@@ -425,56 +653,9 @@ void ADC_GetMultiConversions(ADC_TypeDef *ADCx, uint8_t numChannels, uint16_t *r
 
 
 
-//Funções de manipulação do DAC
-//Inicializa o DAC e os pinos GPIO de acordo com canal selecionado.
-//Esta função configura o pino GPIO associado ao DAC, habilita a interface digital
-//e seleciona o canal apropriado com base no valor do parâmetro channel.
-//@param  channel: identifica o canal DAC desejado (DAC_CHANNEL1 ou DAC_CHANNEL2).
-void DAC_Init(uint8_t channel)
-{
-	GPIO_Clock_Enable(GPIOA);			//liga o clock do GPIOA
-	RCC->APB1ENR |= RCC_APB1ENR_DACEN;	//habilita o clock da interface digital do DAC
 
-	if(!channel)	//seleciona canal 1
-	{
-		GPIO_Pin_Mode(GPIOA, PIN_4, ANALOG);	//configura PA4 como analógico
-		DAC->CR |= DAC_CR_EN1;					//habilita o canal 1
-		DAC->CR |= DAC_CR_BOFF1;				//desabilita o buffer 1
-	}
-	else			//seleciona canal 2
-	{
-		GPIO_Pin_Mode(GPIOA, PIN_5, ANALOG);	//configura PA5 como analógico
-		DAC->CR |= DAC_CR_EN2;					//habilita o canal 2
-		DAC->CR |= DAC_CR_BOFF2;				//desabilita o buffer 2
-	}
-}
 
-//Escreve o valor de saída, com a resolução especificada, no canal selecionado do DAC.
-//Esta função escreve o valor de saída no DAC selecionado com base no canal e resolução especificados.
-//@param  channel: identifica o canal do DAC desejado (DAC_CHANNEL1 ou DAC_CHANNEL2).
-//@param  value: valor a ser escrito no DAC (12 bits ou 8 bits conforme a resolução).
-//@param  resolution: resolução do DAC (DAC_RES_12BITS ou DAC_RES_8BITS)
-void DAC_SetValue(uint8_t channel, uint16_t value, uint8_t resolution)
-{
-	switch((channel << 1) | resolution)
-	{
-		case 0b00:
-			DAC->DHR12R1 = value;	//escrita de 12 bits no canal 1
-			break;
 
-		case 0b01:
-			DAC->DHR8R1 = value;	//escrita de 8 bits no canal 1
-			break;
-
-		case 0b10:
-			DAC->DHR12R2 = value;	//escrita de 12 bits no canal 2
-			break;
-
-		case 0b11:
-			DAC->DHR8R2 = value;	//escrita de 8 bits no canal 2
-			break;
-	}
-}
 
 
 

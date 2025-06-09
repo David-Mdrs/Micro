@@ -116,17 +116,38 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 	Utility_Init();
-//	LCD_Init(4, 20);
+	USART1_Init(); // Permite utilizar prints
+
+	GPIO_Clock_Enable(GPIOA);
+
+	GPIO_Pin_Mode(GPIOA, PIN_4, ANALOG);
+	GPIO_Pin_Mode(GPIOA, PIN_5, ANALOG);
+
+	ADC_Init(ADC1, SINGLE_CHANNEL, DAC_RES_12BITS);
+	ADC_SingleChannel(ADC1, ADC_IN0);
+
+	DAC_Init(DAC_CHANNEL1);
+	DAC_Init(DAC_CHANNEL2);
 
 
-	// MOTOR
-	GPIO_Clock_Enable(GPIOE);
-	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);		// A1
-	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);	// A2
-	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);	// B1
-	GPIO_Pin_Mode(GPIOE, PIN_3, OUTPUT);	// B2
-	GPIO_Pin_Mode(GPIOE, PIN_4, OUTPUT);	// PWM1
-	GPIO_Pin_Mode(GPIOE, PIN_5, OUTPUT);	// PWM2
+
+
+//	GPIO_Clock_Enable(GPIOE);
+//
+//	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);
+//	GPIO_Pin_Mode(GPIOE, PIN_4, INPUT);
+//
+//	GPIO_Resistor_Enable(GPIOE, PIN_3, PULL_UP);
+//	GPIO_Resistor_Enable(GPIOE, PIN_4, PULL_UP);
+//
+//	EXTI_Config(EXTI3, GPIOE, FALLING_EDGE);
+//	EXTI_Config(EXTI4, GPIOE, FALLING_EDGE);
+//
+//	NVIC_EnableIRQ(EXTI3_IRQn);
+//	NVIC_EnableIRQ(EXTI4_IRQn);
+//
+//	NVIC_SetPriority(EXTI3_IRQn, 0);
+//	NVIC_SetPriority(EXTI4_IRQn, 1);
 
 
   /* USER CODE END 2 */
@@ -136,77 +157,98 @@ int main(void)
 
 
 	while (1) {
+
+		// Leitura de 0 a 4095
+		uint16_t leitura = ADC_GetSingleConversion(ADC1);
+		printf("Valor convertido: %d\n", leitura);
+
+		// Delay_us()
+
+		DAC_SetValue(DAC_CHANNEL1, leitura, DAC_RES_12BITS);
+		DAC_SetValue(DAC_CHANNEL2, 4095 - leitura, DAC_RES_12BITS);
+
+
+
+
+
+
+
+//		DAC_SetValue(DAC_CHANNEL1, 2048, DAC_RES_12BITS);
+
+
+
+
 		// MicroServomotor();
 
 
-		// MOTOR
-		for(int i = 0; i < 100; i++) {
-			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
-			Delay_ms(10);
-
-			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
-			Delay_ms(10);
-
-			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
-			Delay_ms(10);
-
-			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
-			Delay_ms(10);
-		}
-
-		for(int i = 0; i < 50; i++) {
-			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
-			Delay_ms(10);
-
-			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
-			Delay_ms(10);
-
-			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
-			Delay_ms(10);
-
-			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
-			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
-			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
-			Delay_ms(10);
-		}
+//		// MOTOR
+//		for(int i = 0; i < 100; i++) {
+//			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
+//			Delay_ms(10);
+//
+//			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
+//			Delay_ms(10);
+//
+//			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
+//			Delay_ms(10);
+//
+//			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
+//			Delay_ms(10);
+//		}
+//
+//		for(int i = 0; i < 50; i++) {
+//			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
+//			Delay_ms(10);
+//
+//			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
+//			Delay_ms(10);
+//
+//			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
+//			Delay_ms(10);
+//
+//			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
+//			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
+//			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
+//			Delay_ms(10);
+//		}
 
 		// SensorUltrassonico();
 		// MotorDC();
@@ -412,6 +454,21 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+
+// INTERRUPÇÕES
+void EXTI3_IRQHandler() {
+	printf("Interrupção em K1\n");
+	Delay_ms(2000);
+	printf("Saindo de K1\n");
+	EXTI_Clear_Pending(EXTI3);
+}
+void EXTI4_IRQHandler() {
+	printf("Interrupção em K0\n");
+	Delay_ms(2000);
+	printf("Saindo de K0\n");
+	EXTI_Clear_Pending(EXTI4);
+}
 
 
 void Semaforo() {
@@ -791,7 +848,7 @@ void Genius() {
 			}
 		}
 	}
-}
+
 
 void SensorUltrassonico() {
 	GPIO_Clock_Enable(GPIOE);
