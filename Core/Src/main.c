@@ -56,6 +56,7 @@ static void MX_GPIO_Init(void);
 
 void SinalSenoidal();
 void WatchDogAnalogico();
+void SensorDeTemperatura();
 
 void Semaforo();
 void InverterLedReg();
@@ -118,13 +119,13 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
 
-//	Utility_Init();
-  	  USART1_Init(); // Permite utilizar prints
-//
-	GPIO_Clock_Enable(GPIOA);
+  Utility_Init();
+  USART1_Init();
+
+//  GPIO_Clock_Enable(GPIOA);
 
 //	GPIO_Pin_Mode(GPIOA, PIN_4, ANALOG);
-	GPIO_Pin_Mode(GPIOA, PIN_5, ANALOG);
+//	GPIO_Pin_Mode(GPIOA, PIN_5, ANALOG);
 //
 //	ADC_Init(ADC1, SINGLE_CHANNEL, DAC_RES_12BITS);
 //	ADC_SingleChannel(ADC1, ADC_IN0);
@@ -132,7 +133,7 @@ int main(void)
 //	DAC_Init(DAC_CHANNEL1);
 //	DAC_Init(DAC_CHANNEL2);
 
-	DAC_Init1(DAC_CHANNEL2);
+//	DAC_Init1(DAC_CHANNEL2);
 
 //	GPIO_Clock_Enable(GPIOE);
 //
@@ -160,223 +161,9 @@ int main(void)
 
 	while (1) {
 		//SinalSenoidal();
-		WatchDogAnalogico();
+		//WatchDogAnalogico();
 
-
-
-//		DAC_SetValue(DAC_CHANNEL2, samples[contador], DAC_RES_12BITS);	//escreve um valor com a resolução especificada no DAC selecionado
-//		++contador; //atualiza o indexador
-//		if(contador == 500) contador = 0; //verifica se chegou ao final do array
-//		Delay_us(4); //aguarda 200 us para a próxima amostra
-
-
-
-
-
-		// DAC_SetValue(DAC_CHANNEL1, , DAC_RES_12BITS);
-
-
-
-
-//		// Leitura de 0 a 4095
-//		uint16_t leitura = ADC_GetSingleConversion(ADC1);
-//		printf("Valor convertido: %d\n", leitura);
-//
-//		// Delay_us()
-
-
-
-
-
-
-
-//		DAC_SetValue(DAC_CHANNEL1, 2048, DAC_RES_12BITS);
-
-
-
-
-		// MicroServomotor();
-
-
-//		// MOTOR
-//		for(int i = 0; i < 100; i++) {
-//			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
-//			Delay_ms(10);
-//
-//			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
-//			Delay_ms(10);
-//
-//			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
-//			Delay_ms(10);
-//
-//			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
-//			Delay_ms(10);
-//		}
-//
-//		for(int i = 0; i < 50; i++) {
-//			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
-//			Delay_ms(10);
-//
-//			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_3, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_1, LOW);
-//			Delay_ms(10);
-//
-//			GPIO_Write_Pin(GPIOE, PIN_4, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_5, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_2, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
-//			Delay_ms(10);
-//
-//			GPIO_Write_Pin(GPIOE, PIN_4, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_5, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_2, HIGH);
-//			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_3, LOW);
-//			GPIO_Write_Pin(GPIOE, PIN_1, HIGH);
-//			Delay_ms(10);
-//		}
-
-		// SensorUltrassonico();
-		// MotorDC();
-
-
-
-
-
-		//Genius();
-
-//		LCD_Write_String(1, 7, "DAVID E");
-//		LCD_Write_String(2, 8, "JOAO");
-//		LCD_Write_String(3, 7, "CUIDA");
-//
-//		for(int i = 0; i <= 10; i++) {
-//			char buffer[4];
-//		    Delay_ms(500);
-//		    sprintf(buffer, "%d", i);
-//		    LCD_Write_String(4, 10, buffer);
-//		}
-//	    Delay_ms(500);
-//	    LCD_Write_String(4, 10, "10");
-//	    Delay_ms(500);
-//
-//		LCD_Write_String(4, 10, "  ");
-
-
-//		// Questão 1
-//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, LOW);
-//		Delay_ms(100);
-//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, HIGH);
-//		Delay_ms(100);
-
-////		// Questão 2
-//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, LOW);
-//		Delay_ms(100);
-//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, HIGH);
-//		Delay_ms(1900);
-
-		// Questão 3
-//		Delay_ms(1000);
-//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, HIGH);
-//		Delay_ms(250);
-//		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, LOW);
-//		Delay_ms(1000);
-
-		// Questão 4
-//		for(int i = 0; i < 2000; i += 10) {
-//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
-//			Delay_us(i);
-//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
-//			Delay_us(1999 - i);
-//		}
-//
-//		for(int i = 0; i < 2000; i += 10) {
-//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
-//			Delay_us(1999 - i);
-//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-//			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
-//			Delay_us(i);
-//		}
-
-//		// Questão 5
-//		for(int i = 0; i < 255; i++) {
-//			GPIO_Write_Port(GPIOE, i);
-//			Delay_ms(400);
-//		}
-
-//		// Questão 6
-//		for(int i = 0; i < 8; i++) {
-//			GPIOE->ODR = 0;
-//			GPIOE->ODR |= 1 << i;
-//			Delay_ms(100);
-//		}
-//		for(int i = 7; i >= 0; i--) {
-//			GPIOE->ODR = 0;
-//			GPIOE->ODR |= 1 << i;
-//			Delay_ms(100);
-//		}
-
-//		// Questão 7
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_RESET);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_SET);
-//		Delay_ms(5000);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_SET);
-//		Delay_ms(2000);
-//
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_1, GPIO_PIN_RESET);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_5, GPIO_PIN_RESET);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_SET);
-//		Delay_ms(5000);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_3, GPIO_PIN_RESET);
-//		HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_SET);
-//		Delay_ms(2000);
-
-		// Questão 8
-		// DisplaySeteSegHexa();
-
-		// Questão 9
-		//DisplaySeteSegHexa2D();
-
-		//13
-		// LedEBotao();
-
+		SensorDeTemperatura();
 
 
     /* USER CODE END WHILE */
@@ -581,6 +368,32 @@ void WatchDogAnalogico() {
 		}
 
 		ADC1->SR &= ~ADC_SR_AWD;
+		Delay_ms(500);
+	}
+}
+void SensorDeTemperatura() {
+	Utility_Init();
+	USART1_Init();
+
+	RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;		//liga o clock da interface digital do ADC1
+	ADC->CCR |= 0b01 << 16;					//prescaler /4
+	ADC1->SQR1 &= ~(0xF << 20);				//conversão de apenas um canal
+	ADC1->SQR3 = 16;						//seleção do canal a ser convertido (IN 16)
+	ADC1->SMPR1 |= (7 << 18);				//tempo de amostragem igual a 480 ciclos de ADCCLK
+	ADC->CCR |= ADC_CCR_TSVREFE;				//liga o sensor de temperatura
+	ADC1->CR2 |= ADC_CR2_ADON;				//liga o conversor AD
+
+	uint32_t *p = (uint32_t *) 0x1FFF7A2C;
+	uint32_t Word = *p;
+	uint16_t TS_CAL1 = (Word & 0x0000FFFF);
+	uint16_t TS_CAL2 = (Word & 0xFFFF0000) >> 16;
+
+	while(1) {
+
+		ADC1->CR2 |= ADC_CR2_SWSTART;
+		while(!(ADC1->SR & ADC_SR_EOC));
+		float temperatura = ((80*(float) (ADC1->DR - TS_CAL1))/(TS_CAL2-TS_CAL1))+30;
+		printf("Temperatura = %.2f\n", temperatura);
 		Delay_ms(500);
 	}
 }
