@@ -375,12 +375,17 @@ void SensorDeTemperatura() {
 	Utility_Init();
 	USART1_Init();
 
+	GPIO_Clock_Enable(GPIOE);
+	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);	// Led 1
+	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);	// Led 2
+	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);	// Buzzer
+
 	RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;		//liga o clock da interface digital do ADC1
 	ADC->CCR |= 0b01 << 16;					//prescaler /4
 	ADC1->SQR1 &= ~(0xF << 20);				//conversão de apenas um canal
 	ADC1->SQR3 = 16;						//seleção do canal a ser convertido (IN 16)
 	ADC1->SMPR1 |= (7 << 18);				//tempo de amostragem igual a 480 ciclos de ADCCLK
-	ADC->CCR |= ADC_CCR_TSVREFE;				//liga o sensor de temperatura
+	ADC->CCR |= ADC_CCR_TSVREFE;			//liga o sensor de temperatura
 	ADC1->CR2 |= ADC_CR2_ADON;				//liga o conversor AD
 
 	uint32_t *p = (uint32_t *) 0x1FFF7A2C;
@@ -389,12 +394,30 @@ void SensorDeTemperatura() {
 	uint16_t TS_CAL2 = (Word & 0xFFFF0000) >> 16;
 
 	while(1) {
-
 		ADC1->CR2 |= ADC_CR2_SWSTART;
 		while(!(ADC1->SR & ADC_SR_EOC));
 		float temperatura = ((80*(float) (ADC1->DR - TS_CAL1))/(TS_CAL2-TS_CAL1))+30;
-		printf("Temperatura = %.2f\n", temperatura);
-		Delay_ms(500);
+
+		printf("Temperatura: %.2f\n", temperatura);
+		Delay_ms(1000);
+
+		if(temperatura <= 50) {
+			Hal_GPIO_WritePin(GPIOE, PIN_0, GPIO_PIN_RESET); 	// Led 1
+			Hal_GPIO_WritePin(GPIOE, PIN_1, GPIO_PIN_RESET);	// Led 2
+			Hal_GPIO_WritePin(GPIOE, PIN_2, GPIO_PIN_RESET);	// Buzzer
+			printf("Dentro da faixa segura!\n\n");
+		} else if(temperatura > 60) {
+			Hal_GPIO_WritePin(GPIOE, PIN_0, GPIO_PIN_SET);		// Led 1
+			printf("Fora da faixa segura! Superaquecimento!\n\n");
+		} else {
+			Hal_GPIO_WritePin(GPIOE, PIN_0, GPIO_PIN_SET);		// Led 1
+			Hal_GPIO_WritePin(GPIOE, PIN_1, GPIO_PIN_SET);		// Led 2
+			Hal_GPIO_WritePin(GPIOE, PIN_2, GPIO_PIN_SET);		// Buzzer
+			Delay_ms(500);
+			Hal_GPIO_WritePin(GPIOE, PIN_2, GPIO_PIN_RESET);	// Buzzer
+			Delay_ms(500);
+			printf("Dentro da faixa de atenção!");
+		}
 	}
 }
 
