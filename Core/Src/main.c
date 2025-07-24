@@ -24,6 +24,7 @@
 
 #include "Utility.h"
 #include "LCD_Blio.h"
+#include "audio_data.h"  // Arquivo gerado com os dados de voz
 #include <stdio.h>
 /* USER CODE END Includes */
 
@@ -53,9 +54,17 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 
+// VARIÁVEIS GLOBAIS
+uint16_t contador = 0;
+float temperatura = 0;
+
+uint16_t contadorBuzzer = 0;
+int superaquecimento = 0;
 
 void SinalSenoidal();
 void WatchDogAnalogico();
+void JoystickComServo();
+void AmplificadorDeAudio();
 void SensorDeTemperatura();
 
 void Semaforo();
@@ -73,10 +82,7 @@ void DisplaySeteSegHexa2D();
 void Genius();
 void SensorUltrassonico();
 void MotorDC();
-void MicroServomotor();
-
-int contador = 0;
-
+void MicroServomotor(int angulo, uint8_t pin);
 
 /* USER CODE END PFP */
 
@@ -89,6 +95,51 @@ int contador = 0;
   * @brief  The application entry point.
   * @retval int
   */
+
+
+
+
+
+
+
+
+
+
+
+volatile uint32_t audio_index = 0;
+
+void TIM3_IRQHandler(void)
+{
+    if (TIM3->SR & TIM_SR_UIF) // Verifica flag de atualização
+    {
+        TIM3->SR &= ~TIM_SR_UIF; // Limpa flag
+
+        if (audio_index < audio_data_len)
+        {
+            DAC_SetValue(DAC_CHANNEL1, audio_data[audio_index++], DAC_RES_8BITS);
+        }
+        else
+        {
+            audio_index = 0; // Repetir
+        }
+    }
+}
+
+void Timer3_Init_48kHz(void)
+{
+    RCC->APB1ENR |= RCC_APB1ENR_TIM3EN; // Habilita clock do TIM3
+
+    TIM3->PSC = 34;  // Prescaler (APB1 = 84 MHz / (34+1) = 2.4 MHz)
+    TIM3->ARR = 49;  // 2.4 MHz / (49+1) = 48 kHz
+    TIM3->DIER |= TIM_DIER_UIE; // Habilita interrupção de atualização
+    TIM3->CR1 |= TIM_CR1_CEN;   // Liga o timer
+
+    NVIC_EnableIRQ(TIM3_IRQn);  // Ativa interrupção no NVIC
+    NVIC_SetPriority(TIM3_IRQn, 1);
+}
+
+
+
 int main(void)
 {
 
@@ -121,6 +172,7 @@ int main(void)
 
   Utility_Init();
   USART1_Init();
+
 
 //  GPIO_Clock_Enable(GPIOA);
 
@@ -158,12 +210,48 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+//	Utility_Init();
+//	USART1_Init();
+//	GPIO_Clock_Enable(GPIOA);
+//	GPIO_Pin_Mode(GPIOA, PIN_6, OUTPUT);	// Led 1
+//	GPIO_Pin_Mode(GPIOA, PIN_7, OUTPUT);	// Led 2
+//	GPIO_Pin_Mode(GPIOA, PIN_0, OUTPUT);	// Buzzer
+//
+//	// ADC
+//	RCC->APB2ENR |= 1 << 8; //liga o clock da interface digital do ADC1
+//	ADC->CCR |= 0b01 << 16; //prescaler /4
+//	ADC1->SQR1 &= ~(0xF << 20); //conversão de apenas um canal
+//	ADC1->SQR3 |= 16; //seleção do canal a ser convertido (IN_16)
+//	ADC1->SMPR1 |= (7 << 18); //tempo de amostragem igual a 480 ciclos de ADCCLK
+//	ADC->CCR |= (1 << 23); //liga o sensor de temperatura
+//	ADC1->CR2 |= 1; //liga o conversor AD
 
-	while (1) {
-		//SinalSenoidal();
-		//WatchDogAnalogico();
+//	// Configurando TIMER 5
+//	RCC->APB1ENR |= RCC_APB1ENR_TIM5EN;
+//	TIM5->PSC = 8400 - 1;
+//	TIM5->ARR = 200 - 1;
+//	TIM5->EGR |= TIM_EGR_UG;
+//	TIM5->CR1 &= ~TIM_CR1_DIR;
+//	TIM5->DIER |= TIM_DIER_UIE;
+//	NVIC_EnableIRQ(TIM5_IRQn);
+//	TIM5->CR1 |= TIM_CR1_CEN;
 
-		SensorDeTemperatura();
+  printf("Iniciando reprodução de áudio...\n");
+
+  DAC_Init(DAC_CHANNEL1); // Inicializa canal 1 do DAC
+
+  Timer3_Init_48kHz(); // Timer para gerar amostragem de 48 kHz
+
+  while (1)
+  {
+      // Tudo é controlado pela interrupção do Timer3
+
+		// SinalSenoidal();
+		// WatchDogAnalogico();
+		// JoystickComServo();
+
+
+		// SensorDeTemperatura();
 
 
     /* USER CODE END WHILE */
@@ -259,7 +347,6 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
-
 // INTERRUPÇÕES
 void EXTI3_IRQHandler() {
 	printf("Interrupção em K1\n");
@@ -272,6 +359,53 @@ void EXTI4_IRQHandler() {
 	Delay_ms(2000);
 	printf("Saindo de K0\n");
 	EXTI_Clear_Pending(EXTI4);
+}
+
+
+void TIM5_IRQHandler() {
+
+	uint32_t *p = (uint32_t *) 0x1FFF7A2C;
+	uint32_t Word = *p;
+	uint16_t TS_CAL1 = (Word & 0x0000FFFF);
+	uint16_t TS_CAL2 = (Word & 0xFFFF0000) >> 16;
+
+	ADC1->CR2 |= ADC_CR2_SWSTART;
+	while(!(ADC1->SR & ADC_SR_EOC));
+	temperatura += ((80*(float) (ADC1->DR - TS_CAL1))/(TS_CAL2-TS_CAL1))+30;
+
+	if(contadorBuzzer < 25 && superaquecimento) {
+		GPIO_Write_Pin(GPIOA, PIN_0, HIGH);
+		contadorBuzzer++;
+	} else {
+		GPIO_Write_Pin(GPIOA, PIN_0, LOW);
+		contadorBuzzer = 0;
+		superaquecimento = 0;
+	}
+
+
+	contador++;
+	if(contador >= 49) {
+		temperatura = temperatura / 50;
+
+		printf("Temperatura: %.2f\n", temperatura);
+		contador = 0;
+		if(temperatura <= 50) {
+			GPIO_Write_Pin(GPIOA, PIN_6, HIGH);
+			GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
+			printf("Dentro da faixa segura!\n\n");
+		} else if(temperatura > 60) {
+			superaquecimento = 1;
+			GPIO_Write_Pin(GPIOA, PIN_6, LOW);
+			GPIO_Write_Pin(GPIOA, PIN_7, LOW);
+			printf("Fora da faixa segura! Superaquecimento!\n\n");
+		} else {
+			GPIO_Write_Pin(GPIOA, PIN_6, LOW);
+			GPIO_Write_Pin(GPIOA, PIN_7, HIGH);
+			printf("Dentro da faixa de atenção!\n\n");
+		}
+	}
+
+	TIM5->SR &= ~TIM_SR_UIF;	// Limpando flag
 }
 
 
@@ -371,55 +505,95 @@ void WatchDogAnalogico() {
 		Delay_ms(500);
 	}
 }
-void SensorDeTemperatura() {
+void JoystickComServo() {
 	Utility_Init();
-	USART1_Init();
 
-	GPIO_Clock_Enable(GPIOE);
-	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);	// Led 1
-	GPIO_Pin_Mode(GPIOE, PIN_1, OUTPUT);	// Led 2
-	GPIO_Pin_Mode(GPIOE, PIN_2, OUTPUT);	// Buzzer
+	ADC_Init(ADC1, SINGLE_CHANNEL, DAC_RES_12BITS);
+	ADC_Init(ADC2, SINGLE_CHANNEL, DAC_RES_12BITS);
+	ADC_SingleChannel(ADC1, ADC_IN0);
+	ADC_SingleChannel(ADC2, ADC_IN1);
 
-	RCC->APB2ENR |= RCC_APB2ENR_ADC1EN;		//liga o clock da interface digital do ADC1
-	ADC->CCR |= 0b01 << 16;					//prescaler /4
-	ADC1->SQR1 &= ~(0xF << 20);				//conversão de apenas um canal
-	ADC1->SQR3 = 16;						//seleção do canal a ser convertido (IN 16)
-	ADC1->SMPR1 |= (7 << 18);				//tempo de amostragem igual a 480 ciclos de ADCCLK
-	ADC->CCR |= ADC_CCR_TSVREFE;			//liga o sensor de temperatura
-	ADC1->CR2 |= ADC_CR2_ADON;				//liga o conversor AD
+	GPIO_Pin_Mode(GPIOA, PIN_2, OUTPUT);
+	GPIO_Pin_Mode(GPIOA, PIN_3, OUTPUT);
 
-	uint32_t *p = (uint32_t *) 0x1FFF7A2C;
-	uint32_t Word = *p;
-	uint16_t TS_CAL1 = (Word & 0x0000FFFF);
-	uint16_t TS_CAL2 = (Word & 0xFFFF0000) >> 16;
+	uint16_t leituraX, leituraY;
 
 	while(1) {
-		ADC1->CR2 |= ADC_CR2_SWSTART;
-		while(!(ADC1->SR & ADC_SR_EOC));
-		float temperatura = ((80*(float) (ADC1->DR - TS_CAL1))/(TS_CAL2-TS_CAL1))+30;
+		leituraX = ADC_GetSingleConversion(ADC1);
+		leituraY = ADC_GetSingleConversion(ADC2);
 
-		printf("Temperatura: %.2f\n", temperatura);
-		Delay_ms(1000);
+		MicroServomotor(((leituraX * 180) / 4095), PIN_2);
+		MicroServomotor(((leituraY * 180) / 4095), PIN_3);
+	}
+}
+void AmplificadorDeAudio() {
+	Utility_Init();
+	GPIO_Clock_Enable(GPIOA);
 
-		if(temperatura <= 50) {
-			Hal_GPIO_WritePin(GPIOE, PIN_0, GPIO_PIN_RESET); 	// Led 1
-			Hal_GPIO_WritePin(GPIOE, PIN_1, GPIO_PIN_RESET);	// Led 2
-			Hal_GPIO_WritePin(GPIOE, PIN_2, GPIO_PIN_RESET);	// Buzzer
-			printf("Dentro da faixa segura!\n\n");
-		} else if(temperatura > 60) {
-			Hal_GPIO_WritePin(GPIOE, PIN_0, GPIO_PIN_SET);		// Led 1
-			printf("Fora da faixa segura! Superaquecimento!\n\n");
-		} else {
-			Hal_GPIO_WritePin(GPIOE, PIN_0, GPIO_PIN_SET);		// Led 1
-			Hal_GPIO_WritePin(GPIOE, PIN_1, GPIO_PIN_SET);		// Led 2
-			Hal_GPIO_WritePin(GPIOE, PIN_2, GPIO_PIN_SET);		// Buzzer
-			Delay_ms(500);
-			Hal_GPIO_WritePin(GPIOE, PIN_2, GPIO_PIN_RESET);	// Buzzer
-			Delay_ms(500);
-			printf("Dentro da faixa de atenção!");
+	GPIO_Pin_Mode(GPIOA, PIN_5, ANALOG);
+	DAC_Init1(DAC_CHANNEL2);
+
+	const uint16_t audio[500] = {	// Valores da frequência do áudio
+			1860, 1875, 1891, 1906, 1922, 1937, 1953, 1968, 1984, 1999,
+			2015, 2030, 2046, 2061, 2077, 2092, 2107, 2122, 2138, 2153,
+			2168, 2183, 2198, 2213, 2228, 2243, 2257, 2272, 2287, 2301,
+			2316, 2330, 2345, 2359, 2373, 2387, 2402, 2415, 2429, 2443,
+			2457, 2470, 2484, 2497, 2511, 2524, 2537, 2550, 2563, 2576,
+			2588, 2601, 2613, 2626, 2638, 2650, 2662, 2674, 2685, 2697,
+			2708, 2720, 2731, 2742, 2753, 2763, 2774, 2784, 2795, 2805,
+			2815, 2825, 2834, 2844, 2853, 2863, 2872, 2881, 2889, 2898,
+			2906, 2915, 2923, 2931, 2939, 2946, 2954, 2961, 2968, 2975,
+			2981, 2988, 2994, 3001, 3007, 3012, 3018, 3024, 3029, 3034,
+			3039, 3044, 3048, 3052, 3057, 3061, 3064, 3068, 3071, 3075,
+			3078, 3080, 3083, 3085, 3088, 3090, 3092, 3093, 3095, 3096,
+			3097, 3098, 3099, 3099, 3099, 3100, 3099, 3099, 3099, 3098,
+			3097, 3096, 3095, 3093, 3092, 3090, 3088, 3085, 3083, 3080,
+			3078, 3075, 3071, 3068, 3064, 3061, 3057, 3052, 3048, 3044,
+			3039, 3034, 3029, 3024, 3018, 3012, 3007, 3001, 2994, 2988,
+			2981, 2975, 2968, 2961, 2954, 2946, 2939, 2931, 2923, 2915,
+			2906, 2898, 2889, 2881, 2872, 2863, 2853, 2844, 2834, 2825,
+			2815, 2805, 2795, 2784, 2774, 2763, 2753, 2742, 2731, 2720,
+			2708, 2697, 2685, 2674, 2662, 2650, 2638, 2626, 2613, 2601,
+			2588, 2576, 2563, 2550, 2537, 2524, 2511, 2497, 2484, 2470,
+			2457, 2443, 2429, 2415, 2402, 2387, 2373, 2359, 2345, 2330,
+			2316, 2301, 2287, 2272, 2257, 2243, 2228, 2213, 2198, 2183,
+			2168, 2153, 2138, 2122, 2107, 2092, 2077, 2061, 2046, 2030,
+			2015, 1999, 1984, 1968, 1953, 1937, 1922, 1906, 1891, 1875,
+			1860, 1844, 1828, 1813, 1797, 1782, 1766, 1751, 1735, 1720,
+			1704, 1689, 1673, 1658, 1642, 1627, 1612, 1597, 1581, 1566,
+			1551, 1536, 1521, 1506, 1491, 1476, 1462, 1447, 1432, 1418,
+			1403, 1389, 1374, 1360, 1346, 1332, 1317, 1304, 1290, 1276,
+			1262, 1249, 1235, 1222, 1208, 1195, 1182, 1169, 1156, 1143,
+			1131, 1118, 1106, 1093, 1081, 1069, 1057, 1045, 1034, 1022,
+			1011, 999, 988, 977, 966, 956, 945, 935, 924, 914,
+			904, 894, 885, 875, 866, 856, 847, 838, 830, 821,
+			813, 804, 796, 788, 780, 773, 765, 758, 751, 744,
+			738, 731, 725, 718, 712, 707, 701, 695, 690, 685,
+			680, 675, 671, 667, 662, 658, 655, 651, 648, 644,
+			641, 639, 636, 634, 631, 629, 627, 626, 624, 623,
+			622, 621, 620, 620, 620, 620, 620, 620, 620, 621,
+			622, 623, 624, 626, 627, 629, 631, 634, 636, 639,
+			641, 644, 648, 651, 655, 658, 662, 667, 671, 675,
+			680, 685, 690, 695, 701, 707, 712, 718, 725, 731,
+			738, 744, 751, 758, 765, 773, 780, 788, 796, 804,
+			813, 821, 830, 838, 847, 856, 866, 875, 885, 894,
+			904, 914, 924, 935, 945, 956, 966, 977, 988, 999,
+			1011, 1022, 1034, 1045, 1057, 1069, 1081, 1093, 1106, 1118,
+			1131, 1143, 1156, 1169, 1182, 1195, 1208, 1222, 1235, 1249,
+			1262, 1276, 1290, 1304, 1317, 1332, 1346, 1360, 1374, 1389,
+			1403, 1418, 1432, 1447, 1462, 1476, 1491, 1506, 1521, 1536,
+			1551, 1566, 1581, 1597, 1612, 1627, 1642, 1658, 1673, 1689,
+			1704, 1720, 1735, 1751, 1766, 1782, 1797, 1813, 1828, 1844
+	};
+
+	while (1) {
+		for(int i = 0; i < 500; i++) {
+			DAC_SetValue(DAC_CHANNEL2, audio[i], DAC_RES_8BITS);
+			Delay_us(4);
 		}
 	}
 }
+
 
 // QUESTÕES DA PRIMEIRA UNIDADE
 void Semaforo() {
@@ -865,37 +1039,14 @@ void MotorDC() {
 		AtivarModoPWM(GPIOE, GPIO_PIN_2, 2);
 	}
 }
-void MicroServomotor() {
-	GPIO_Clock_Enable(GPIOE);
-	GPIO_Pin_Mode(GPIOE, PIN_0, OUTPUT);			// Pino do motor
-	GPIO_Pin_Mode(GPIOE, PIN_2, INPUT);				// Botão
-	GPIO_Pin_Mode(GPIOE, PIN_3, INPUT);				// Botão
-	GPIO_Resistor_Enable(GPIOE, PIN_2, PULL_UP);
-	GPIO_Resistor_Enable(GPIOE, PIN_3, PULL_UP);
+void MicroServomotor(int angulo, uint8_t pin) {
+	int pulso = 500 + (2000 * angulo) / 180;
 
-	contador = 500;
-	while (1) {
+	GPIO_Write_Pin(GPIOA, pin, HIGH);
+	Delay_us(pulso);
 
-		if(!GPIO_Read_Pin(GPIOE, PIN_3)) {
-			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-			Delay_us(contador);
-			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-			Delay_us(20000 - contador);
-			if(contador < 2500) {
-				contador += 10;
-			}
-		}
-
-		if(!GPIO_Read_Pin(GPIOE, PIN_2)) {
-			GPIO_Write_Pin(GPIOE, PIN_0, HIGH);
-			Delay_us(contador);
-			GPIO_Write_Pin(GPIOE, PIN_0, LOW);
-			Delay_us(20000 - contador);
-			if(contador > 500) {
-				contador -= 10;
-			}
-		}
-	}
+	GPIO_Write_Pin(GPIOA, pin, LOW);
+	Delay_us(20000 - pulso);
 }
 
 
